@@ -1,4 +1,3 @@
-
 const translations = {
     en: {
         slogan: "LEARN • UNDERSTAND • SUCCEED",
@@ -29,6 +28,16 @@ const translations = {
         requestsText: "Send private requests to the admin.",
         profile: "MY PROFILE",
         profileText: "Manage your account.",
+        lessonsTitle: "MY LESSONS",
+        lessonsPageText: "Explore your lessons and improve your knowledge.",
+        english: "ENGLISH",
+        englishText: "Learn English language.",
+        biology: "BIOLOGY",
+        biologyText: "Explore the world of biology.",
+        physics: "PHYSICS",
+        physicsText: "Understand physics concepts.",
+        mathematics: "MATHEMATICS",
+        mathematicsText: "Improve your mathematics skills.",
         footer1: "© 2026 TAKAMURA LEARN",
         footer2: "Learn something new every day.",
         language: "🇸🇴 SOMALI"
@@ -63,6 +72,16 @@ const translations = {
         requestsText: "Codsi gaar ah u dir maamulka.",
         profile: "ASTAANTAYDA",
         profileText: "Maamul akoonkaaga.",
+        lessonsTitle: "CASHARRADAYDA",
+        lessonsPageText: "Baadh casharradaada oo kobci aqoontaada.",
+        english: "INGIRIISI",
+        englishText: "Baro luqadda Ingiriisiga.",
+        biology: "BAYOOLOJI",
+        biologyText: "Baro cilmiga noolaha.",
+        physics: "FIISIKIS",
+        physicsText: "Faham fikradaha fiisigiska.",
+        mathematics: "XISAAB",
+        mathematicsText: "Kobci xirfadahaaga xisaabta.",
         footer1: "© 2026 TAKAMURA LEARN",
         footer2: "Maalin kasta wax cusub baro.",
         language: "🇬🇧 ENGLISH"
@@ -74,17 +93,13 @@ let currentLanguage = localStorage.getItem("language") || "en";
 function changeLanguage() {
     const t = translations[currentLanguage];
     const path = location.pathname;
-
-    document.querySelector("header p").textContent =
-        path.endsWith("dashboard.html") ? t.dashboard : t.slogan;
-
     const links = document.querySelectorAll("nav a");
 
     if (path.endsWith("dashboard.html")) {
+        document.querySelector("header p").textContent = t.dashboard;
+
         const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
-        links.forEach((link, i) => {
-            link.textContent = t[names[i]];
-        });
+        links.forEach((link, i) => link.textContent = t[names[i]]);
 
         document.querySelector(".hero h2").textContent = t.welcomeStudent;
         document.querySelector(".hero p").textContent = t.dashboardText;
@@ -98,7 +113,27 @@ function changeLanguage() {
             card.querySelector("p").textContent = descriptions[i];
         });
 
+    } else if (path.endsWith("lessons.html")) {
+        document.querySelector("header p").textContent = t.lessons;
+
+        const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
+        links.forEach((link, i) => link.textContent = t[names[i]]);
+
+        document.querySelector(".hero h2").textContent = t.lessonsTitle;
+        document.querySelector(".hero p").textContent = t.lessonsPageText;
+
+        const cards = document.querySelectorAll(".dashboard-card");
+        const titles = [t.english, t.biology, t.physics, t.mathematics];
+        const descriptions = [t.englishText, t.biologyText, t.physicsText, t.mathematicsText];
+
+        cards.forEach((card, i) => {
+            card.querySelector("h3").textContent = titles[i];
+            card.querySelector("p").textContent = descriptions[i];
+        });
+
     } else {
+        document.querySelector("header p").textContent = t.slogan;
+
         links[0].textContent = t.home;
         links[1].textContent = t.about;
         links[2].textContent = t.login;
@@ -136,3 +171,4 @@ document.getElementById("languageBtn").addEventListener("click", function() {
 });
 
 changeLanguage();
+
