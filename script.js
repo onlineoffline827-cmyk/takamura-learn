@@ -16,6 +16,19 @@ const translations = {
         emailLabel: "GMAIL ADDRESS",
         emailPlaceholder: "Enter your Gmail",
         continue: "CONTINUE",
+        dashboard: "STUDENT DASHBOARD",
+        welcomeStudent: "WELCOME, STUDENT!",
+        dashboardText: "Your learning dashboard is ready. Choose a section below and continue learning.",
+        lessons: "LESSONS",
+        lessonsText: "Explore your lessons.",
+        pdf: "PDF LIBRARY",
+        pdfText: "Read and download study materials.",
+        ai: "AI ASSISTANT",
+        aiText: "Get help understanding lessons.",
+        requests: "MY REQUESTS",
+        requestsText: "Send private requests to the admin.",
+        profile: "MY PROFILE",
+        profileText: "Manage your account.",
         footer1: "© 2026 TAKAMURA LEARN",
         footer2: "Learn something new every day.",
         language: "🇸🇴 SOMALI"
@@ -37,6 +50,19 @@ const translations = {
         emailLabel: "CINWAANKA GMAIL",
         emailPlaceholder: "Geli Gmail-kaaga",
         continue: "SII WAD",
+        dashboard: "BOGGA ARDAYGA",
+        welcomeStudent: "KU SOO DHAWOW, ARDAY!",
+        dashboardText: "Boggaaga waxbarasho waa diyaar. Dooro qaybta aad rabto oo sii wad waxbarashada.",
+        lessons: "CASHARRADA",
+        lessonsText: "Baadh casharradaada.",
+        pdf: "MAKTABADDA PDF",
+        pdfText: "Akhri oo soo degso agabka waxbarashada.",
+        ai: "KAALIYAHA AI",
+        aiText: "Hel caawimaad fahamka casharrada.",
+        requests: "CODSIYADAYDA",
+        requestsText: "Codsi gaar ah u dir maamulka.",
+        profile: "ASTAANTAYDA",
+        profileText: "Maamul akoonkaaga.",
         footer1: "© 2026 TAKAMURA LEARN",
         footer2: "Maalin kasta wax cusub baro.",
         language: "🇬🇧 ENGLISH"
@@ -47,32 +73,53 @@ let currentLanguage = localStorage.getItem("language") || "en";
 
 function changeLanguage() {
     const t = translations[currentLanguage];
-
-    document.querySelector("header p").textContent = t.slogan;
-
-    const links = document.querySelectorAll("nav a");
-    links[0].textContent = t.home;
-    links[1].textContent = t.about;
-    links[2].textContent = t.login;
-
     const path = location.pathname;
 
-    if (path.endsWith("about.html")) {
-        document.querySelector(".hero h2").textContent = t.aboutTitle;
-        document.querySelector(".hero p").textContent = t.aboutText;
-        document.querySelector(".enter-btn").textContent = t.back;
+    document.querySelector("header p").textContent =
+        path.endsWith("dashboard.html") ? t.dashboard : t.slogan;
 
-    } else if (path.endsWith("login.html")) {
-        document.querySelector(".hero h2").textContent = t.loginTitle;
-        document.querySelector(".hero p").textContent = t.loginText;
-        document.querySelector("label").textContent = t.emailLabel;
-        document.querySelector("#email").placeholder = t.emailPlaceholder;
-        document.querySelector(".login-box button").textContent = t.continue;
+    const links = document.querySelectorAll("nav a");
+
+    if (path.endsWith("dashboard.html")) {
+        const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
+        links.forEach((link, i) => {
+            link.textContent = t[names[i]];
+        });
+
+        document.querySelector(".hero h2").textContent = t.welcomeStudent;
+        document.querySelector(".hero p").textContent = t.dashboardText;
+
+        const cards = document.querySelectorAll(".dashboard-card");
+        const titles = [t.lessons, t.pdf, t.ai, t.requests, t.profile];
+        const descriptions = [t.lessonsText, t.pdfText, t.aiText, t.requestsText, t.profileText];
+
+        cards.forEach((card, i) => {
+            card.querySelector("h3").textContent = titles[i];
+            card.querySelector("p").textContent = descriptions[i];
+        });
 
     } else {
-        document.querySelector(".hero h2").textContent = t.homeTitle;
-        document.querySelector(".hero p").textContent = t.homeText;
-        document.querySelector(".enter-btn").textContent = t.portal;
+        links[0].textContent = t.home;
+        links[1].textContent = t.about;
+        links[2].textContent = t.login;
+
+        if (path.endsWith("about.html")) {
+            document.querySelector(".hero h2").textContent = t.aboutTitle;
+            document.querySelector(".hero p").textContent = t.aboutText;
+            document.querySelector(".enter-btn").textContent = t.back;
+
+        } else if (path.endsWith("login.html")) {
+            document.querySelector(".hero h2").textContent = t.loginTitle;
+            document.querySelector(".hero p").textContent = t.loginText;
+            document.querySelector("label").textContent = t.emailLabel;
+            document.querySelector("#email").placeholder = t.emailPlaceholder;
+            document.querySelector(".login-box button").textContent = t.continue;
+
+        } else {
+            document.querySelector(".hero h2").textContent = t.homeTitle;
+            document.querySelector(".hero p").textContent = t.homeText;
+            document.querySelector(".enter-btn").textContent = t.portal;
+        }
     }
 
     const footer = document.querySelectorAll("footer p");
