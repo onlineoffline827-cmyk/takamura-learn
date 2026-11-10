@@ -1,3 +1,4 @@
+
 const translations = {
     en: {
         slogan: "LEARN • UNDERSTAND • SUCCEED",
@@ -29,26 +30,6 @@ const translations = {
         profile: "MY PROFILE",
         profileText: "Manage your account.",
         lessonsTitle: "MY LESSONS",
-        englishTitle: "ENGLISH LANGUAGE",
-        biologyTitle: "BIOLOGY",
-biologyPageText: "Welcome to your Biology learning classroom.",
-cellBiology: "CELL BIOLOGY",
-cellBiologyText: "Learn about cells and their structures.",
-humanBiology: "HUMAN BIOLOGY",
-humanBiologyText: "Explore the human body and its systems.",
-plantBiology: "PLANT BIOLOGY",
-plantBiologyText: "Discover plants and how they grow.",
-biologyExercises: "EXERCISES",
-biologyExercisesText: "Practice what you have learned.",
-        englishPageText: "Welcome to your English learning classroom.",
-grammar: "GRAMMAR",
-grammarText: "Learn English grammar.",
-vocabulary: "VOCABULARY",
-vocabularyText: "Learn new English words.",
-reading: "READING",
-readingText: "Improve your reading skills.",
-exercises: "EXERCISES",
-exercisesText: "Practice what you learn.",
         lessonsPageText: "Explore your lessons and improve your knowledge.",
         english: "ENGLISH",
         englishText: "Learn English language.",
@@ -58,6 +39,26 @@ exercisesText: "Practice what you learn.",
         physicsText: "Understand physics concepts.",
         mathematics: "MATHEMATICS",
         mathematicsText: "Improve your mathematics skills.",
+        englishTitle: "ENGLISH LANGUAGE",
+        englishPageText: "Welcome to your English learning classroom.",
+        grammar: "GRAMMAR",
+        grammarText: "Learn English grammar.",
+        vocabulary: "VOCABULARY",
+        vocabularyText: "Learn new English words.",
+        reading: "READING",
+        readingText: "Improve your reading skills.",
+        exercises: "EXERCISES",
+        exercisesText: "Practice what you learn.",
+        biologyTitle: "BIOLOGY",
+        biologyPageText: "Welcome to your Biology learning classroom.",
+        cellBiology: "CELL BIOLOGY",
+        cellBiologyText: "Learn about cells and their structures.",
+        humanBiology: "HUMAN BIOLOGY",
+        humanBiologyText: "Explore the human body and its systems.",
+        plantBiology: "PLANT BIOLOGY",
+        plantBiologyText: "Discover plants and how they grow.",
+        biologyExercises: "EXERCISES",
+        biologyExercisesText: "Practice what you have learned.",
         footer1: "© 2026 TAKAMURA LEARN",
         footer2: "Learn something new every day.",
         language: "🇸🇴 SOMALI"
@@ -93,26 +94,6 @@ exercisesText: "Practice what you learn.",
         profile: "ASTAANTAYDA",
         profileText: "Maamul akoonkaaga.",
         lessonsTitle: "CASHARRADAYDA",
-        englishTitle: "LUQADDA INGIRIISIGA",
-        biologyTitle: "CILMIGA NOLOSHA",
-biologyPageText: "Ku soo dhowow fasalkaaga barashada Biology-ga.",
-cellBiology: "BAYOLOJIGA UNUGYADA",
-cellBiologyText: "Baro unugyada iyo qaybaha ay ka kooban yihiin.",
-humanBiology: "BAYOLOJIGA AADAMAHA",
-humanBiologyText: "Baro jirka aadanaha iyo hab-dhismeedkiisa.",
-plantBiology: "BAYOLOJIGA DHIRTA",
-plantBiologyText: "Baro dhirta iyo sida ay u korto.",
-biologyExercises: "LAYLISYO",
-biologyExercisesText: "Ku tababar wixii aad baratay.",
-        englishPageText: "Ku soo dhowow fasalkaaga barashada Ingiriisiga.",
-grammar: "NAHWAHA",
-grammarText: "Baro xeerarka naxwaha Ingiriisiga.",
-vocabulary: "ERAYADA",
-vocabularyText: "Baro erayo cusub oo Ingiriisi ah.",
-reading: "AKHRISKA",
-readingText: "Kobci xirfadahaaga akhriska.",
-exercises: "LAYLISYADA",
-exercisesText: "Ku tababar wixii aad baratay.",
         lessonsPageText: "Baadh casharradaada oo kobci aqoontaada.",
         english: "INGIRIISI",
         englishText: "Baro luqadda Ingiriisiga.",
@@ -122,6 +103,26 @@ exercisesText: "Ku tababar wixii aad baratay.",
         physicsText: "Faham fikradaha fiisigiska.",
         mathematics: "XISAAB",
         mathematicsText: "Kobci xirfadahaaga xisaabta.",
+        englishTitle: "LUQADDA INGIRIISIGA",
+        englishPageText: "Ku soo dhowow fasalkaaga barashada Ingiriisiga.",
+        grammar: "NAHWAHA",
+        grammarText: "Baro xeerarka naxwaha Ingiriisiga.",
+        vocabulary: "ERAYADA",
+        vocabularyText: "Baro erayo cusub oo Ingiriisi ah.",
+        reading: "AKHRISKA",
+        readingText: "Kobci xirfadahaaga akhriska.",
+        exercises: "LAYLISYADA",
+        exercisesText: "Ku tababar wixii aad baratay.",
+        biologyTitle: "CILMIGA NOLOSHA",
+        biologyPageText: "Ku soo dhowow fasalkaaga barashada Biology-ga.",
+        cellBiology: "BAYOLOJIGA UNUGYADA",
+        cellBiologyText: "Baro unugyada iyo qaybaha ay ka kooban yihiin.",
+        humanBiology: "BAYOLOJIGA AADAMAHA",
+        humanBiologyText: "Baro jirka aadanaha iyo hab-dhismeedkiisa.",
+        plantBiology: "BAYOLOJIGA DHIRTA",
+        plantBiologyText: "Baro dhirta iyo sida ay u korto.",
+        biologyExercises: "LAYLISYO",
+        biologyExercisesText: "Ku tababar wixii aad baratay.",
         footer1: "© 2026 TAKAMURA LEARN",
         footer2: "Maalin kasta wax cusub baro.",
         language: "🇬🇧 ENGLISH"
@@ -169,7 +170,9 @@ function changeLanguage() {
         cards.forEach((card, i) => {
             card.querySelector("h3").textContent = titles[i];
             card.querySelector("p").textContent = descriptions[i];
-        });    } else if (path.endsWith("english.html")) {
+        });
+
+    } else if (path.endsWith("english.html")) {
         document.querySelector("header p").textContent = t.english;
 
         const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
@@ -180,46 +183,31 @@ function changeLanguage() {
 
         const cards = document.querySelectorAll(".dashboard-card");
         const titles = [t.grammar, t.vocabulary, t.reading, t.exercises];
-        const descriptions = [
-            t.grammarText,
-            t.vocabularyText,
-            t.readingText,
-            t.exercisesText
-        ];
+        const descriptions = [t.grammarText, t.vocabularyText, t.readingText, t.exercisesText];
 
         cards.forEach((card, i) => {
             card.querySelector("h3").textContent = titles[i];
             card.querySelector("p").textContent = descriptions[i];
         });
-} else if (path.endsWith("biology.html")) {
-    document.querySelector("header p").textContent = t.slogan;
 
-    const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
-    links.forEach((link, i) => link.textContent = t[names[i]]);
+    } else if (path.endsWith("biology.html")) {
+        document.querySelector("header p").textContent = t.biology;
 
-    document.querySelector(".hero h2").textContent = t.biologyTitle;
-    document.querySelector(".hero p").textContent = t.biologyPageText;
+        const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
+        links.forEach((link, i) => link.textContent = t[names[i]]);
 
-    const cards = document.querySelectorAll(".dashboard-card");
+        document.querySelector(".hero h2").textContent = t.biologyTitle;
+        document.querySelector(".hero p").textContent = t.biologyPageText;
 
-    const titles = [
-        t.cellBiology,
-        t.humanBiology,
-        t.plantBiology,
-        t.biologyExercises
-    ];
+        const cards = document.querySelectorAll(".dashboard-card");
+        const titles = [t.cellBiology, t.humanBiology, t.plantBiology, t.biologyExercises];
+        const descriptions = [t.cellBiologyText, t.humanBiologyText, t.plantBiologyText, t.biologyExercisesText];
 
-    const descriptions = [
-        t.cellBiologyText,
-        t.humanBiologyText,
-        t.plantBiologyText,
-        t.biologyExercisesText
-    ];
+        cards.forEach((card, i) => {
+            card.querySelector("h3").textContent = titles[i];
+            card.querySelector("p").textContent = descriptions[i];
+        });
 
-    cards.forEach((card, i) => {
-        card.querySelector("h3").textContent = titles[i];
-        card.querySelector("p").textContent = descriptions[i];
-    });
     } else {
         document.querySelector("header p").textContent = t.slogan;
 
@@ -260,4 +248,3 @@ document.getElementById("languageBtn").addEventListener("click", function() {
 });
 
 changeLanguage();
-
