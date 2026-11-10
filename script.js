@@ -30,6 +30,16 @@ const translations = {
         profileText: "Manage your account.",
         lessonsTitle: "MY LESSONS",
         englishTitle: "ENGLISH LANGUAGE",
+        biologyTitle: "BIOLOGY",
+biologyPageText: "Welcome to your Biology learning classroom.",
+cellBiology: "CELL BIOLOGY",
+cellBiologyText: "Learn about cells and their structures.",
+humanBiology: "HUMAN BIOLOGY",
+humanBiologyText: "Explore the human body and its systems.",
+plantBiology: "PLANT BIOLOGY",
+plantBiologyText: "Discover plants and how they grow.",
+biologyExercises: "EXERCISES",
+biologyExercisesText: "Practice what you have learned.",
         englishPageText: "Welcome to your English learning classroom.",
 grammar: "GRAMMAR",
 grammarText: "Learn English grammar.",
@@ -84,6 +94,16 @@ exercisesText: "Practice what you learn.",
         profileText: "Maamul akoonkaaga.",
         lessonsTitle: "CASHARRADAYDA",
         englishTitle: "LUQADDA INGIRIISIGA",
+        biologyTitle: "CILMIGA NOLOSHA",
+biologyPageText: "Ku soo dhowow fasalkaaga barashada Biology-ga.",
+cellBiology: "BAYOLOJIGA UNUGYADA",
+cellBiologyText: "Baro unugyada iyo qaybaha ay ka kooban yihiin.",
+humanBiology: "BAYOLOJIGA AADAMAHA",
+humanBiologyText: "Baro jirka aadanaha iyo hab-dhismeedkiisa.",
+plantBiology: "BAYOLOJIGA DHIRTA",
+plantBiologyText: "Baro dhirta iyo sida ay u korto.",
+biologyExercises: "LAYLISYO",
+biologyExercisesText: "Ku tababar wixii aad baratay.",
         englishPageText: "Ku soo dhowow fasalkaaga barashada Ingiriisiga.",
 grammar: "NAHWAHA",
 grammarText: "Baro xeerarka naxwaha Ingiriisiga.",
@@ -171,7 +191,35 @@ function changeLanguage() {
             card.querySelector("h3").textContent = titles[i];
             card.querySelector("p").textContent = descriptions[i];
         });
+} else if (path.endsWith("biology.html")) {
+    document.querySelector("header p").textContent = t.slogan;
 
+    const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
+    links.forEach((link, i) => link.textContent = t[names[i]]);
+
+    document.querySelector(".hero h2").textContent = t.biologyTitle;
+    document.querySelector(".hero p").textContent = t.biologyPageText;
+
+    const cards = document.querySelectorAll(".dashboard-card");
+
+    const titles = [
+        t.cellBiology,
+        t.humanBiology,
+        t.plantBiology,
+        t.biologyExercises
+    ];
+
+    const descriptions = [
+        t.cellBiologyText,
+        t.humanBiologyText,
+        t.plantBiologyText,
+        t.biologyExercisesText
+    ];
+
+    cards.forEach((card, i) => {
+        card.querySelector("h3").textContent = titles[i];
+        card.querySelector("p").textContent = descriptions[i];
+    });
     } else {
         document.querySelector("header p").textContent = t.slogan;
 
