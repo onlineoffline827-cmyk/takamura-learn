@@ -29,6 +29,16 @@ const translations = {
         profile: "MY PROFILE",
         profileText: "Manage your account.",
         lessonsTitle: "MY LESSONS",
+        englishTitle: "ENGLISH LANGUAGE",
+        englishPageText: "Welcome to your English learning classroom.",
+grammar: "GRAMMAR",
+grammarText: "Learn English grammar.",
+vocabulary: "VOCABULARY",
+vocabularyText: "Learn new English words.",
+reading: "READING",
+readingText: "Improve your reading skills.",
+exercises: "EXERCISES",
+exercisesText: "Practice what you learn.",
         lessonsPageText: "Explore your lessons and improve your knowledge.",
         english: "ENGLISH",
         englishText: "Learn English language.",
@@ -73,6 +83,16 @@ const translations = {
         profile: "ASTAANTAYDA",
         profileText: "Maamul akoonkaaga.",
         lessonsTitle: "CASHARRADAYDA",
+        englishTitle: "LUQADDA INGIRIISIGA",
+        englishPageText: "Ku soo dhowow fasalkaaga barashada Ingiriisiga.",
+grammar: "NAHWAHA",
+grammarText: "Baro xeerarka naxwaha Ingiriisiga.",
+vocabulary: "ERAYADA",
+vocabularyText: "Baro erayo cusub oo Ingiriisi ah.",
+reading: "AKHRISKA",
+readingText: "Kobci xirfadahaaga akhriska.",
+exercises: "LAYLISYADA",
+exercisesText: "Ku tababar wixii aad baratay.",
         lessonsPageText: "Baadh casharradaada oo kobci aqoontaada.",
         english: "INGIRIISI",
         englishText: "Baro luqadda Ingiriisiga.",
@@ -125,6 +145,27 @@ function changeLanguage() {
         const cards = document.querySelectorAll(".dashboard-card");
         const titles = [t.english, t.biology, t.physics, t.mathematics];
         const descriptions = [t.englishText, t.biologyText, t.physicsText, t.mathematicsText];
+
+        cards.forEach((card, i) => {
+            card.querySelector("h3").textContent = titles[i];
+            card.querySelector("p").textContent = descriptions[i];
+        });    } else if (path.endsWith("english.html")) {
+        document.querySelector("header p").textContent = t.english;
+
+        const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
+        links.forEach((link, i) => link.textContent = t[names[i]]);
+
+        document.querySelector(".hero h2").textContent = t.englishTitle;
+        document.querySelector(".hero p").textContent = t.englishPageText;
+
+        const cards = document.querySelectorAll(".dashboard-card");
+        const titles = [t.grammar, t.vocabulary, t.reading, t.exercises];
+        const descriptions = [
+            t.grammarText,
+            t.vocabularyText,
+            t.readingText,
+            t.exercisesText
+        ];
 
         cards.forEach((card, i) => {
             card.querySelector("h3").textContent = titles[i];
