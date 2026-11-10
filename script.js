@@ -11,6 +11,11 @@ const translations = {
         aboutTitle: "ABOUT TAKAMURA LEARN",
         aboutText: "TAKAMURA LEARN is an educational platform created to help students learn, understand lessons and improve their knowledge. Our goal is to make learning easier through lessons, PDF books and helpful AI tools.",
         back: "BACK TO HOME",
+        loginTitle: "STUDENT LOGIN",
+        loginText: "Welcome to the student portal. Enter your email to continue your learning journey.",
+        emailLabel: "GMAIL ADDRESS",
+        emailPlaceholder: "Enter your Gmail",
+        continue: "CONTINUE",
         footer1: "© 2026 TAKAMURA LEARN",
         footer2: "Learn something new every day.",
         language: "🇸🇴 SOMALI"
@@ -27,6 +32,11 @@ const translations = {
         aboutTitle: "KU SAABSAN TAKAMURA LEARN",
         aboutText: "TAKAMURA LEARN waa madal waxbarasho oo loo sameeyay inay ardayda ka caawiso barashada, fahamka casharrada iyo kobcinta aqoontooda. Ujeeddadeennu waa inaan waxbarashada fududeyno annagoo adeegsanayna casharro, buugaag PDF ah iyo qalab AI ah.",
         back: "KU NOQO GURIGA",
+        loginTitle: "GALITAANKA ARDAYGA",
+        loginText: "Ku soo dhowow bogga ardayda. Geli Gmail-kaaga si aad u sii waddo waxbarashadaada.",
+        emailLabel: "CINWAANKA GMAIL",
+        emailPlaceholder: "Geli Gmail-kaaga",
+        continue: "SII WAD",
         footer1: "© 2026 TAKAMURA LEARN",
         footer2: "Maalin kasta wax cusub baro.",
         language: "🇬🇧 ENGLISH"
@@ -45,12 +55,20 @@ function changeLanguage() {
     links[1].textContent = t.about;
     links[2].textContent = t.login;
 
-    const isAboutPage = location.pathname.endsWith("about.html");
+    const path = location.pathname;
 
-    if (isAboutPage) {
+    if (path.endsWith("about.html")) {
         document.querySelector(".hero h2").textContent = t.aboutTitle;
         document.querySelector(".hero p").textContent = t.aboutText;
         document.querySelector(".enter-btn").textContent = t.back;
+
+    } else if (path.endsWith("login.html")) {
+        document.querySelector(".hero h2").textContent = t.loginTitle;
+        document.querySelector(".hero p").textContent = t.loginText;
+        document.querySelector("label").textContent = t.emailLabel;
+        document.querySelector("#email").placeholder = t.emailPlaceholder;
+        document.querySelector(".login-box button").textContent = t.continue;
+
     } else {
         document.querySelector(".hero h2").textContent = t.homeTitle;
         document.querySelector(".hero p").textContent = t.homeText;
@@ -71,4 +89,3 @@ document.getElementById("languageBtn").addEventListener("click", function() {
 });
 
 changeLanguage();
-
