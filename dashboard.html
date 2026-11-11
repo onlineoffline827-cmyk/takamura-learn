@@ -8,6 +8,64 @@
     <title>STUDENT DASHBOARD - TAKAMURA LEARN</title>
 
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        .creator-box {
+            max-width: 330px;
+            margin: 20px auto 0;
+            background: #080f20;
+            border: 1px solid #00d9ff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .creator-box summary {
+            padding: 14px;
+            color: #00d9ff;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .creator-box summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .creator-box summary::after {
+            content: "  ⌄";
+        }
+
+        .creator-info {
+            padding: 15px;
+            text-align: center;
+            border-top: 1px solid #00d9ff;
+        }
+
+        .creator-info h3 {
+            color: #00d9ff;
+            margin-bottom: 12px;
+        }
+
+        .creator-info a {
+            color: #25D366;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .hero {
+            padding-top: 75px;
+            padding-bottom: 70px;
+        }
+
+        .hero h2 {
+            letter-spacing: 1px;
+        }
+
+        .hero p {
+            margin-top: 12px;
+        }
+    </style>
 </head>
 
 <body>
@@ -29,6 +87,25 @@
     </header>
 
     <main>
+
+        <details class="creator-box">
+            <summary>✦ THE CREATOR IS SAYID ✦</summary>
+
+            <div class="creator-info">
+                <h3>CREATED BY SAYID</h3>
+
+                <p>Have a question or need help?</p>
+
+                <p style="margin-top: 12px;">
+                    <a href="https://wa.me/252657880835"
+                       target="_blank"
+                       rel="noopener">
+                        <span>●</span> WhatsApp: 657880835
+                    </a>
+                </p>
+            </div>
+        </details>
+
         <section class="hero">
 
             <h2>WELCOME, STUDENT!</h2>
