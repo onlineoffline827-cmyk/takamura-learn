@@ -1,11 +1,41 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>LESSONS - TAKAMURA LEARN</title>
+
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        .back-dashboard {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin: 22px 20px 0;
+            padding: 11px 17px;
+            color: #00d9ff;
+            background: #080f20;
+            border: 1px solid #00d9ff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .back-dashboard:hover {
+            background: #00d9ff;
+            color: #050914;
+        }
+
+        .dashboard-card {
+            cursor: pointer;
+        }
+    </style>
 </head>
+
 <body>
 
 <header>
@@ -24,9 +54,16 @@
     <button id="languageBtn">🇸🇴 SOMALI</button>
 </header>
 
+<a href="dashboard.html" class="back-dashboard">
+    <span>←</span>
+    <span>BACK TO DASHBOARD</span>
+</a>
+
 <main>
+
     <section class="hero">
         <h2>MY LESSONS</h2>
+
         <p>
             Explore your lessons and improve your knowledge.
         </p>
@@ -35,15 +72,15 @@
     <section class="dashboard-grid">
 
         <a href="english.html" class="dashboard-card">
-    <h2>📘</h2>
-    <h3>ENGLISH</h3>
-    <p>Learn English language.</p>
+            <h2>📘</h2>
+            <h3>ENGLISH</h3>
+            <p>Learn English language.</p>
         </a>
 
         <a href="biology.html" class="dashboard-card">
-    <h2>🔬</h2>
-    <h3>BIOLOGY</h3>
-    <p>Explore the world of biology.</p>
+            <h2>🔬</h2>
+            <h3>BIOLOGY</h3>
+            <p>Explore the world of biology.</p>
         </a>
 
         <div class="dashboard-card">
@@ -59,6 +96,7 @@
         </div>
 
     </section>
+
 </main>
 
 <footer>
@@ -67,5 +105,6 @@
 </footer>
 
 <script src="script.js"></script>
+
 </body>
 </html>
