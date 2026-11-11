@@ -1,0 +1,205 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ADMIN DASHBOARD - TAKAMURA LEARN</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .admin-container {
+            max-width: 650px;
+            margin: 50px auto;
+            padding: 25px;
+        }
+
+        .admin-card {
+            background: #080f20;
+            border: 1px solid #00d9ff;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 25px;
+        }
+
+        .admin-card h2 {
+            color: #00d9ff;
+            margin-bottom: 20px;
+        }
+
+        .admin-card label {
+            display: block;
+            text-align: left;
+            color: #00d9ff;
+            margin: 15px 0 8px;
+        }
+
+        .admin-card input {
+            width: 100%;
+            padding: 14px;
+            background: #050914;
+            color: white;
+            border: 1px solid #334155;
+            border-radius: 7px;
+            font-size: 16px;
+        }
+
+        .admin-card button,
+        #logoutBtn {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            background: #00d9ff;
+            color: #050914;
+            border: none;
+            border-radius: 7px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #message {
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>TAKAMURA LEARN</h1>
+        <p>ADMINISTRATION PANEL</p>
+    </header>
+
+    <main class="admin-container">
+
+        <h2>WELCOME, ADMIN</h2>
+        <p>Manage your students and learning platform.</p>
+
+        <section class="admin-card">
+
+            <h2>INVITE NEW STUDENT</h2>
+
+            <form id="inviteForm">
+
+                <label for="studentName">STUDENT FULL NAME</label>
+
+                <input
+                    type="text"
+                    id="studentName"
+                    placeholder="Enter student's full name"
+                    required
+                >
+
+                <label for="studentEmail">STUDENT GMAIL</label>
+
+                <input
+                    type="email"
+                    id="studentEmail"
+                    placeholder="Enter student's Gmail"
+                    required
+                >
+
+                <button type="submit" id="inviteBtn">
+                    INVITE STUDENT
+                </button>
+
+            </form>
+
+            <p id="message" role="status"></p>
+
+        </section>
+
+        <button id="logoutBtn">LOG OUT</button>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+
+    <script>
+        const inviteForm = document.getElementById("inviteForm");
+        const inviteBtn = document.getElementById("inviteBtn");
+        const message = document.getElementById("message");
+
+        async function checkAdmin() {
+            const { data: { user }, error } =
+                await supabaseClient.auth.getUser();
+
+            if (error || !user) {
+                window.location.href = "login.html";
+                return false;
+            }
+
+            const { data: profile, error: profileError } =
+                await supabaseClient
+                    .from("profiles")
+                    .select("role")
+                    .eq("id", user.id)
+                    .single();
+
+            if (profileError || profile?.role !== "admin") {
+                await supabaseClient.auth.signOut();
+                window.location.href = "login.html";
+                return false;
+            }
+
+            return true;
+        }
+
+        inviteForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const full_name =
+                document.getElementById("studentName").value.trim();
+
+            const email =
+                document.getElementById("studentEmail").value.trim();
+
+            inviteBtn.disabled = true;
+            inviteBtn.textContent = "SENDING INVITATION...";
+            message.textContent = "";
+
+            try {
+                const { data, error } =
+                    await supabaseClient.functions.invoke(
+                        "invite-student",
+                        {
+                            body: { full_name, email }
+                        }
+                    );
+
+                if (error) throw error;
+                if (data?.error) throw new Error(data.error);
+
+                message.textContent =
+                    "Invitation sent successfully!";
+
+                message.style.color = "#00d9ff";
+                inviteForm.reset();
+
+            } catch (error) {
+                message.textContent =
+                    error.message || "Invitation failed.";
+
+                message.style.color = "#ff7777";
+
+            } finally {
+                inviteBtn.disabled = false;
+                inviteBtn.textContent = "INVITE STUDENT";
+            }
+        });
+
+        document.getElementById("logoutBtn")
+            .addEventListener("click", async function() {
+                await supabaseClient.auth.signOut();
+                window.location.href = "login.html";
+            });
+
+        checkAdmin();
+    </script>
+
+</body>
+</html>
