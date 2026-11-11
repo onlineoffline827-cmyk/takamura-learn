@@ -6,6 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biology | Takamura Learn</title>
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        .back-dashboard {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px;
+            padding: 11px 16px;
+            color: #00d9ff;
+            text-decoration: none;
+            border: 1px solid #00d9ff;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .back-dashboard:hover {
+            background: #00d9ff;
+            color: #050914;
+        }
+    </style>
 </head>
 <body>
 
@@ -24,6 +46,11 @@
 
     <button id="languageBtn" onclick="toggleLanguage()">SOMALI</button>
 </header>
+
+<a href="dashboard.html" class="back-dashboard">
+    <span>←</span>
+    <span>BACK TO DASHBOARD</span>
+</a>
 
 <section class="hero">
     <h2>BIOLOGY</h2>
