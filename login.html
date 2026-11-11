@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>STUDENT LOGIN - TAKAMURA LEARN</title>
+    <title>LOGIN - TAKAMURA LEARN</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -19,7 +19,7 @@
         <nav>
             <a href="index.html">HOME</a>
             <a href="about.html">ABOUT</a>
-            <a href="login.html">STUDENT LOGIN</a>
+            <a href="login.html">LOGIN</a>
         </nav>
 
         <button id="languageBtn">🇸🇴 SOMALI</button>
@@ -28,16 +28,23 @@
     <main>
         <section class="hero">
 
-            <h2>STUDENT LOGIN</h2>
+            <h2>CHOOSE YOUR LOGIN</h2>
 
             <p>
-                Welcome to the student portal.
-                Enter your email to continue your learning journey.
+                Welcome to TAKAMURA LEARN.
+                Choose your account type to continue.
             </p>
+
+            <!-- STUDENT LOGIN -->
 
             <div class="login-box">
 
-                <form>
+                <h2>STUDENT LOGIN</h2>
+
+                <p>Access your learning portal.</p>
+
+                <form id="studentLoginForm">
+
                     <label for="email">GMAIL ADDRESS</label>
 
                     <input
@@ -47,9 +54,55 @@
                         required
                     >
 
-                    <button type="submit" class="enter-btn">
-                        CONTINUE
+                    <label for="studentPassword">PASSWORD</label>
+
+                    <input
+                        type="password"
+                        id="studentPassword"
+                        placeholder="Enter your password"
+                        required
+                    >
+
+                    <button type="button" class="enter-btn">
+                        STUDENT LOGIN
                     </button>
+
+                </form>
+
+            </div>
+
+            <!-- ADMIN LOGIN -->
+
+            <div class="login-box">
+
+                <h2>ADMIN LOGIN</h2>
+
+                <p>Private administration access.</p>
+
+                <form id="adminLoginForm">
+
+                    <label for="adminEmail">ADMIN EMAIL</label>
+
+                    <input
+                        type="email"
+                        id="adminEmail"
+                        placeholder="Enter admin email"
+                        required
+                    >
+
+                    <label for="adminPassword">PASSWORD</label>
+
+                    <input
+                        type="password"
+                        id="adminPassword"
+                        placeholder="Enter admin password"
+                        required
+                    >
+
+                    <button type="button" class="enter-btn">
+                        ADMIN LOGIN
+                    </button>
+
                 </form>
 
             </div>
