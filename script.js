@@ -28,9 +28,11 @@ const translations = {
         enterPassword: "Enter your password",
         loginError: "Login failed. Check your email and password.",
         wrongRole: "You are not authorized to access this area.",
+
         dashboard: "STUDENT DASHBOARD",
         welcomeStudent: "WELCOME, STUDENT!",
         dashboardText: "Your learning dashboard is ready. Choose a section below and continue learning.",
+
         lessons: "LESSONS",
         lessonsText: "Explore your lessons.",
         pdf: "PDF LIBRARY",
@@ -41,8 +43,10 @@ const translations = {
         requestsText: "Send private requests to the admin.",
         profile: "MY PROFILE",
         profileText: "Manage your account.",
+
         lessonsTitle: "MY LESSONS",
         lessonsPageText: "Explore your lessons and improve your knowledge.",
+
         english: "ENGLISH",
         englishText: "Learn English language.",
         biology: "BIOLOGY",
@@ -57,8 +61,24 @@ const translations = {
 
         lessonSummary: "LESSON SUMMARY",
         lessonSummaryText: "Explore summarized lessons.",
+
         summaryTitle: "ENGLISH LESSON SUMMARY",
         summaryText: "Explore your summarized English lessons.",
+
+        biologySummaryTitle: "BIOLOGY LESSON SUMMARY",
+        biologySummaryText: "Explore your summarized Biology lessons.",
+
+        physicsSummaryTitle: "PHYSICS LESSON SUMMARY",
+        physicsSummaryText: "Explore your summarized Physics lessons.",
+
+        mathematicsSummaryTitle: "MATHEMATICS LESSON SUMMARY",
+        mathematicsSummaryText: "Explore your summarized Mathematics lessons.",
+
+        noLessons: "NO LESSONS AVAILABLE YET",
+        englishNoLessons: "English lesson summaries will appear here when they are published by the administrator.",
+        biologyNoLessons: "Biology lesson summaries will appear here when they are published by the administrator.",
+        physicsNoLessons: "Physics lesson summaries will appear here when they are published by the administrator.",
+        mathematicsNoLessons: "Mathematics lesson summaries will appear here when they are published by the administrator.",
 
         grammar: "GRAMMAR",
         grammarText: "Learn English grammar.",
@@ -119,9 +139,11 @@ const translations = {
         enterPassword: "Geli furaha sirta",
         loginError: "Gelitaanku wuu fashilmay. Hubi Gmail-ka iyo password-ka.",
         wrongRole: "Looma oggola inaad gasho qaybtan.",
+
         dashboard: "BOGGA ARDAYGA",
         welcomeStudent: "KU SOO DHAWOW, ARDAY!",
         dashboardText: "Boggaaga waxbarasho waa diyaar. Dooro qaybta aad rabto oo sii wad waxbarashada.",
+
         lessons: "CASHARRADA",
         lessonsText: "Baadh casharradaada.",
         pdf: "MAKTABADDA PDF",
@@ -132,8 +154,10 @@ const translations = {
         requestsText: "Codsi gaar ah u dir maamulka.",
         profile: "ASTAANTAYDA",
         profileText: "Maamul akoonkaaga.",
+
         lessonsTitle: "CASHARRADAYDA",
         lessonsPageText: "Baadh casharradaada oo kobci aqoontaada.",
+
         english: "INGIRIISI",
         englishText: "Baro luqadda Ingiriisiga.",
         biology: "BAYOOLOJI",
@@ -148,8 +172,24 @@ const translations = {
 
         lessonSummary: "SOO KOOBIDDA CASHARRADA",
         lessonSummaryText: "Baadh casharrada la soo koobay.",
+
         summaryTitle: "SOO KOOBIDDA CASHARRADA INGIRIISIGA",
         summaryText: "Baadh casharradaada Ingiriisiga ee la soo koobay.",
+
+        biologySummaryTitle: "SOO KOOBIDDA CASHARRADA BAYOOLOJIGA",
+        biologySummaryText: "Baadh casharradaada Bayoolojiga ee la soo koobay.",
+
+        physicsSummaryTitle: "SOO KOOBIDDA CASHARRADA FIISIKISKA",
+        physicsSummaryText: "Baadh casharradaada Fiisigiska ee la soo koobay.",
+
+        mathematicsSummaryTitle: "SOO KOOBIDDA CASHARRADA XISAABTA",
+        mathematicsSummaryText: "Baadh casharradaada Xisaabta ee la soo koobay.",
+
+        noLessons: "WELI CASHARRO MA JIRAAN",
+        englishNoLessons: "Soo koobidda casharrada Ingiriisiga halkan ayay ka soo muuqan doonaan marka maamulka daabaco.",
+        biologyNoLessons: "Soo koobidda casharrada Bayoolojiga halkan ayay ka soo muuqan doonaan marka maamulka daabaco.",
+        physicsNoLessons: "Soo koobidda casharrada Fiisigiska halkan ayay ka soo muuqan doonaan marka maamulka daabaco.",
+        mathematicsNoLessons: "Soo koobidda casharrada Xisaabta halkan ayay ka soo muuqan doonaan marka maamulka daabaco.",
 
         grammar: "NAHWAHA",
         grammarText: "Baro xeerarka naxwaha Ingiriisiga.",
@@ -183,7 +223,13 @@ const translations = {
     }
 };
 
+
+// =================================
+// LANGUAGE SETTINGS
+// =================================
+
 let currentLanguage = localStorage.getItem("language") || "en";
+
 
 function changeLanguage() {
     const t = translations[currentLanguage];
@@ -200,6 +246,7 @@ function changeLanguage() {
         });
     };
 
+
     const updateSummaryCard = () => {
         const cards = document.querySelectorAll(".dashboard-card");
 
@@ -212,16 +259,34 @@ function changeLanguage() {
         });
     };
 
+
+    // STUDENT DASHBOARD
     if (path.endsWith("dashboard.html")) {
+
         document.querySelector("header p").textContent = t.dashboard;
+
         updateNavigation();
 
         document.querySelector(".hero h2").textContent = t.welcomeStudent;
         document.querySelector(".hero p").textContent = t.dashboardText;
 
         const cards = document.querySelectorAll(".dashboard-card");
-        const titles = [t.lessons, t.pdf, t.ai, t.requests, t.profile];
-        const descriptions = [t.lessonsText, t.pdfText, t.aiText, t.requestsText, t.profileText];
+
+        const titles = [
+            t.lessons,
+            t.pdf,
+            t.ai,
+            t.requests,
+            t.profile
+        ];
+
+        const descriptions = [
+            t.lessonsText,
+            t.pdfText,
+            t.aiText,
+            t.requestsText,
+            t.profileText
+        ];
 
         cards.forEach((card, i) => {
             const title = card.querySelector("h3");
@@ -231,16 +296,32 @@ function changeLanguage() {
             if (description && descriptions[i]) description.textContent = descriptions[i];
         });
 
+
+    // LESSONS PAGE
     } else if (path.endsWith("lessons.html")) {
+
         document.querySelector("header p").textContent = t.lessons;
+
         updateNavigation();
 
         document.querySelector(".hero h2").textContent = t.lessonsTitle;
         document.querySelector(".hero p").textContent = t.lessonsPageText;
 
         const cards = document.querySelectorAll(".dashboard-card");
-        const titles = [t.english, t.biology, t.physics, t.mathematics];
-        const descriptions = [t.englishText, t.biologyText, t.physicsText, t.mathematicsText];
+
+        const titles = [
+            t.english,
+            t.biology,
+            t.physics,
+            t.mathematics
+        ];
+
+        const descriptions = [
+            t.englishText,
+            t.biologyText,
+            t.physicsText,
+            t.mathematicsText
+        ];
 
         cards.forEach((card, i) => {
             const title = card.querySelector("h3");
@@ -250,8 +331,12 @@ function changeLanguage() {
             if (description && descriptions[i]) description.textContent = descriptions[i];
         });
 
+
+    // ENGLISH SUBJECT PAGE
     } else if (path.endsWith("english.html")) {
+
         document.querySelector("header p").textContent = t.english;
+
         updateNavigation();
 
         document.querySelector(".hero h2").textContent = t.englishTitle;
@@ -259,16 +344,59 @@ function changeLanguage() {
 
         updateSummaryCard();
 
-    } else if (path.endsWith("english-summary.html")) {
-        document.querySelector("header p").textContent = t.english;
+
+    // FOUR SUMMARY PAGES
+    } else if (
+        path.endsWith("english-summary.html") ||
+        path.endsWith("biology-summary.html") ||
+        path.endsWith("physics-summary.html") ||
+        path.endsWith("mathematics-summary.html")
+    ) {
 
         updateNavigation();
 
-        document.querySelector(".hero h2").textContent = t.summaryTitle;
-        document.querySelector(".hero p").textContent = t.summaryText;
+        let subject = "";
 
+        if (path.endsWith("english-summary.html")) {
+            subject = "english";
+        } else if (path.endsWith("biology-summary.html")) {
+            subject = "biology";
+        } else if (path.endsWith("physics-summary.html")) {
+            subject = "physics";
+        } else {
+            subject = "mathematics";
+        }
+
+        document.querySelector("header p").textContent = t[subject];
+
+        const titleKey = subject === "english"
+            ? "summaryTitle"
+            : subject + "SummaryTitle";
+
+        const textKey = subject === "english"
+            ? "summaryText"
+            : subject + "SummaryText";
+
+        document.querySelector(".hero h2").textContent = t[titleKey];
+        document.querySelector(".hero p").textContent = t[textKey];
+
+        const emptyTitle = document.querySelector("#summaryEmpty h3");
+        const emptyText = document.querySelector("#summaryEmpty p");
+
+        if (emptyTitle) {
+            emptyTitle.textContent = t.noLessons;
+        }
+
+        if (emptyText) {
+            emptyText.textContent = t[subject + "NoLessons"];
+        }
+
+
+    // BIOLOGY SUBJECT PAGE
     } else if (path.endsWith("biology.html")) {
+
         document.querySelector("header p").textContent = t.biology;
+
         updateNavigation();
 
         document.querySelector(".hero h2").textContent = t.biologyTitle;
@@ -276,8 +404,12 @@ function changeLanguage() {
 
         updateSummaryCard();
 
+
+    // PHYSICS SUBJECT PAGE
     } else if (path.endsWith("physics.html")) {
+
         document.querySelector("header p").textContent = t.physics;
+
         updateNavigation();
 
         document.querySelector(".hero h2").textContent = t.physicsTitle;
@@ -285,8 +417,12 @@ function changeLanguage() {
 
         updateSummaryCard();
 
+
+    // MATHEMATICS SUBJECT PAGE
     } else if (path.endsWith("mathematics.html")) {
+
         document.querySelector("header p").textContent = t.mathematics;
+
         updateNavigation();
 
         document.querySelector(".hero h2").textContent = t.mathematicsTitle;
@@ -294,21 +430,31 @@ function changeLanguage() {
 
         updateSummaryCard();
 
+
+    // HOME, ABOUT AND LOGIN PAGES
     } else {
+
         document.querySelector("header p").textContent = t.slogan;
 
         if (links[0]) links[0].textContent = t.home;
         if (links[1]) links[1].textContent = t.about;
         if (links[2]) links[2].textContent = t.login;
 
+
         if (path.endsWith("about.html")) {
+
             document.querySelector(".hero h2").textContent = t.aboutTitle;
             document.querySelector(".hero p").textContent = t.aboutText;
 
             const backButton = document.querySelector(".enter-btn");
-            if (backButton) backButton.textContent = t.back;
+
+            if (backButton) {
+                backButton.textContent = t.back;
+            }
+
 
         } else if (path.endsWith("login.html")) {
+
             document.querySelector(".hero h2").textContent = t.chooseLogin;
 
             const boxes = document.querySelectorAll(".login-box");
@@ -316,37 +462,52 @@ function changeLanguage() {
             if (boxes[0]) {
                 boxes[0].querySelector("h2").textContent = t.studentLogin;
                 boxes[0].querySelector("p").textContent = t.studentDescription;
+
                 boxes[0].querySelector('label[for="email"]').textContent = t.emailLabel;
                 boxes[0].querySelector("#email").placeholder = t.enterStudentEmail;
+
                 boxes[0].querySelector('label[for="studentPassword"]').textContent = t.password;
                 boxes[0].querySelector("#studentPassword").placeholder = t.enterPassword;
+
                 boxes[0].querySelector("button").textContent = t.studentLogin;
             }
 
             if (boxes[1]) {
                 boxes[1].querySelector("h2").textContent = t.adminLogin;
                 boxes[1].querySelector("p").textContent = t.adminDescription;
+
                 boxes[1].querySelector('label[for="adminEmail"]').textContent = t.adminEmail;
                 boxes[1].querySelector("#adminEmail").placeholder = t.enterAdminEmail;
+
                 boxes[1].querySelector('label[for="adminPassword"]').textContent = t.password;
                 boxes[1].querySelector("#adminPassword").placeholder = t.enterPassword;
+
                 boxes[1].querySelector("button").textContent = t.adminLogin;
             }
 
+
         } else {
+
             document.querySelector(".hero h2").textContent = t.homeTitle;
             document.querySelector(".hero p").textContent = t.homeText;
 
             const enterButton = document.querySelector(".enter-btn");
-            if (enterButton) enterButton.textContent = t.portal;
+
+            if (enterButton) {
+                enterButton.textContent = t.portal;
+            }
         }
     }
 
+
+    // FOOTER TRANSLATION
     const footer = document.querySelectorAll("footer p");
 
     if (footer[0]) footer[0].textContent = t.footer1;
     if (footer[1]) footer[1].textContent = t.footer2;
 
+
+    // LANGUAGE BUTTON
     const languageButton = document.getElementById("languageBtn");
 
     if (languageButton) {
@@ -354,10 +515,20 @@ function changeLanguage() {
     }
 }
 
+
+// =================================
+// LANGUAGE BUTTON EVENT
+// =================================
+
 const languageButton = document.getElementById("languageBtn");
 
 if (languageButton) {
+
+    // Avoid duplicate switching from inline HTML handlers
+    languageButton.removeAttribute("onclick");
+
     languageButton.addEventListener("click", function() {
+
         currentLanguage = currentLanguage === "en" ? "so" : "en";
 
         localStorage.setItem("language", currentLanguage);
@@ -366,18 +537,23 @@ if (languageButton) {
     });
 }
 
+
+// Load saved language
 changeLanguage();
+
 
 // =================================
 // TAKAMURA LEARN AUTHENTICATION
 // =================================
 
 async function handleLogin(email, password, requiredRole) {
+
     const form = requiredRole === "admin"
         ? document.getElementById("adminLoginForm")
         : document.getElementById("studentLoginForm");
 
     const button = form?.querySelector("button");
+
     const t = translations[currentLanguage];
 
     if (!window.supabase || (!window.supabaseClient && typeof supabaseClient === "undefined")) {
@@ -391,6 +567,7 @@ async function handleLogin(email, password, requiredRole) {
     button.textContent = "PLEASE WAIT...";
 
     try {
+
         const { data, error } =
             await supabaseClient.auth.signInWithPassword({
                 email: email.trim(),
@@ -398,6 +575,7 @@ async function handleLogin(email, password, requiredRole) {
             });
 
         if (error) throw error;
+
 
         const { data: profile, error: profileError } =
             await supabaseClient
@@ -408,27 +586,39 @@ async function handleLogin(email, password, requiredRole) {
 
         if (profileError) throw profileError;
 
+
         if (profile.role !== requiredRole) {
+
             await supabaseClient.auth.signOut();
+
             throw new Error(t.wrongRole);
         }
+
 
         window.location.href = requiredRole === "admin"
             ? "admin-dashboard.html"
             : "dashboard.html";
 
+
     } catch (error) {
+
         alert(error.message || t.loginError);
+
     } finally {
+
         button.disabled = false;
+
         button.textContent = requiredRole === "admin"
             ? t.adminLogin
             : t.studentLogin;
     }
 }
 
+
+// STUDENT LOGIN
 document.getElementById("studentLoginForm")
     ?.addEventListener("submit", function(event) {
+
         event.preventDefault();
 
         handleLogin(
@@ -438,8 +628,11 @@ document.getElementById("studentLoginForm")
         );
     });
 
+
+// ADMIN LOGIN
 document.getElementById("adminLoginForm")
     ?.addEventListener("submit", function(event) {
+
         event.preventDefault();
 
         handleLogin(
