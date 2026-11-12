@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematics Lesson Summary | Takamura Learn</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .back-dashboard {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px;
+            padding: 11px 16px;
+            color: #00d9ff;
+            text-decoration: none;
+            border: 1px solid #00d9ff;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .back-dashboard:hover {
+            background: #00d9ff;
+            color: #050914;
+        }
+
+        .empty-summary {
+            max-width: 600px;
+            margin: 35px auto 70px;
+            padding: 35px 20px;
+            text-align: center;
+            border: 1px solid #00d9ff;
+            border-radius: 12px;
+            background: #080f20;
+        }
+
+        .empty-summary h3 {
+            color: #00d9ff;
+            margin-bottom: 15px;
+        }
+
+        .empty-summary p {
+            color: #ccc;
+            line-height: 1.7;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>TAKAMURA LEARN</h1>
+    <p>LEARN • UNDERSTAND • SUCCEED</p>
+
+    <nav>
+        <a href="index.html">HOME</a>
+        <a href="lessons.html">LESSONS</a>
+        <a href="pdf-library.html">PDF LIBRARY</a>
+        <a href="ai-assistant.html">AI ASSISTANT</a>
+        <a href="my-requests.html">MY REQUESTS</a>
+        <a href="profile.html">PROFILE</a>
+    </nav>
+
+    <button id="languageBtn" onclick="toggleLanguage()">SOMALI</button>
+</header>
+
+<a href="dashboard.html" class="back-dashboard">
+    <span>←</span>
+    <span>BACK TO DASHBOARD</span>
+</a>
+
+<section class="hero">
+    <h2>MATHEMATICS LESSON SUMMARY</h2>
+    <p>Explore your summarized Mathematics lessons.</p>
+</section>
+
+<section class="empty-summary">
+    <h3>NO LESSONS AVAILABLE YET</h3>
+    <p>
+        Mathematics lesson summaries will appear here
+        when they are published by the administrator.
+    </p>
+</section>
+
+<footer>
+    <p>© 2026 TAKAMURA LEARN</p>
+    <p>LEARN • UNDERSTAND • SUCCEED</p>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
