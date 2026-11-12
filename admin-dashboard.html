@@ -133,8 +133,6 @@
             scroll-margin-top: 20px;
         }
 
-        /* OCR DOCUMENT LIBRARY */
-
         .document-card {
             border: 1px solid #334155;
             border-radius: 10px;
@@ -177,17 +175,12 @@
     <p>ADMINISTRATION PANEL</p>
 </header>
 
-<!-- ADMIN MENU -->
 <nav class="admin-nav">
 
     <a href="#dashboard">DASHBOARD</a>
-
     <a href="#publishLesson">PUBLISH LESSON</a>
-
     <a href="#uploadFile">UPLOAD PDF</a>
-
     <a href="#ocrLibrary">DOCUMENT LIBRARY</a>
-
     <a href="#inviteStudent">INVITE STUDENT</a>
 
     <button type="button" id="logoutBtn">LOG OUT</button>
@@ -196,7 +189,6 @@
 
 <main class="admin-container">
 
-    <!-- DASHBOARD -->
     <section id="dashboard">
 
         <h2>WELCOME, ADMIN</h2>
@@ -207,8 +199,8 @@
 
     </section>
 
-
     <!-- PUBLISH LESSON -->
+
     <section class="admin-card" id="publishLesson">
 
         <h2>PUBLISH NEW LESSON</h2>
@@ -276,8 +268,8 @@
 
     </section>
 
-
     <!-- PDF / IMAGE UPLOAD -->
+
     <section class="admin-card" id="uploadFile">
 
         <h2>UPLOAD PDF / IMAGE</h2>
@@ -289,17 +281,13 @@
 
         <form id="uploadForm">
 
-            <label for="uploadSubject">
-                SELECT SUBJECT
-            </label>
+            <label for="uploadSubject">SELECT SUBJECT</label>
 
             <select id="uploadSubject" required>
                 <option value="">LOADING SUBJECTS...</option>
             </select>
 
-            <label for="uploadTitle">
-                DOCUMENT TITLE
-            </label>
+            <label for="uploadTitle">DOCUMENT TITLE</label>
 
             <input
                 type="text"
@@ -308,9 +296,7 @@
                 required
             >
 
-            <label for="lessonFile">
-                SELECT PDF OR IMAGE
-            </label>
+            <label for="lessonFile">SELECT PDF OR IMAGE</label>
 
             <input
                 type="file"
@@ -336,8 +322,8 @@
 
     </section>
 
-
     <!-- OCR DOCUMENT LIBRARY -->
+
     <section class="admin-card" id="ocrLibrary">
 
         <h2>DOCUMENT LIBRARY</h2>
@@ -361,17 +347,15 @@
 
     </section>
 
-
     <!-- INVITE STUDENT -->
+
     <section class="admin-card" id="inviteStudent">
 
         <h2>INVITE NEW STUDENT</h2>
 
         <form id="inviteForm">
 
-            <label for="studentName">
-                STUDENT FULL NAME
-            </label>
+            <label for="studentName">STUDENT FULL NAME</label>
 
             <input
                 type="text"
@@ -380,9 +364,7 @@
                 required
             >
 
-            <label for="studentEmail">
-                STUDENT GMAIL
-            </label>
+            <label for="studentEmail">STUDENT GMAIL</label>
 
             <input
                 type="email"
@@ -404,7 +386,6 @@
     </section>
 
 </main>
-
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
@@ -442,6 +423,7 @@
 
 
     // CHECK ADMIN
+
     async function checkAdmin() {
 
         const { data: { user }, error } =
@@ -475,6 +457,7 @@
 
 
     // LOAD SUBJECTS
+
     async function loadSubjects() {
 
         subjectSelect.innerHTML =
@@ -530,6 +513,7 @@
 
 
     // PUBLISH LESSON
+
     publishForm.addEventListener("submit", async function(event) {
 
         event.preventDefault();
@@ -621,6 +605,7 @@
 
 
     // UPLOAD PDF / IMAGE
+
     uploadForm.addEventListener("submit", async function(event) {
 
         event.preventDefault();
@@ -774,6 +759,7 @@
 
 
     // LOAD DOCUMENT LIBRARY
+
     async function loadUploads() {
 
         uploadsList.textContent = "Loading documents...";
@@ -835,7 +821,6 @@
             card.append(title, fileName, status);
 
 
-            // OCR COMPLETED: REVIEW AND PUBLISH
             if (doc.status === "ocr_completed") {
 
                 const textLabel = document.createElement("label");
@@ -869,7 +854,6 @@
 
             }
 
-            // DOCUMENT NOT YET PROCESSED
             else if (
                 doc.status !== "published" &&
                 doc.status !== "processing"
@@ -893,7 +877,6 @@
 
             }
 
-            // PROCESSING
             else if (doc.status === "processing") {
 
                 const waiting = document.createElement("p");
@@ -907,7 +890,6 @@
 
             }
 
-            // PUBLISHED
             else {
 
                 const published = document.createElement("p");
@@ -928,19 +910,34 @@
     }
 
 
-    // PROCESS OCR
+    // PROCESS OCR - IMPROVED ERROR DETAILS
+
     async function processDocument(uploadId, button) {
 
         button.disabled = true;
-
         button.textContent = "EXTRACTING TEXT...";
 
-        ocrMessage.textContent =
-            "OCR is processing your document. Please wait.";
-
+        ocrMessage.textContent = "Checking login session...";
         ocrMessage.style.color = "#00d9ff";
 
         try {
+
+            const { data: sessionData, error: sessionError } =
+                await supabaseClient.auth.getSession();
+
+            if (sessionError) throw sessionError;
+
+            const accessToken =
+                sessionData.session?.access_token;
+
+            if (!accessToken) {
+                throw new Error(
+                    "No active session. Please log in again."
+                );
+            }
+
+            ocrMessage.textContent =
+                "Sending document for OCR...";
 
             const { data, error } =
                 await supabaseClient.functions.invoke(
@@ -948,38 +945,63 @@
                     {
                         body: {
                             upload_id: uploadId
+                        },
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`
                         }
                     }
                 );
 
-            if (error) throw error;
+            if (error) {
+
+                console.error("OCR FUNCTION ERROR:", error);
+
+                if (error.context instanceof Response) {
+
+                    const responseBody =
+                        await error.context.clone().text();
+
+                    throw new Error(
+                        "HTTP " + error.context.status +
+                        " — " + responseBody
+                    );
+                }
+
+                throw error;
+            }
 
             if (data?.error) {
                 throw new Error(data.error);
             }
 
             ocrMessage.textContent =
-                "OCR COMPLETED! REVIEW THE EXTRACTED TEXT BELOW.";
+                "OCR COMPLETED! REVIEW THE EXTRACTED TEXT.";
 
             ocrMessage.style.color = "#00d9ff";
 
         } catch (error) {
 
-            console.error("OCR error:", error);
+            console.error("OCR ERROR:", error);
 
             ocrMessage.textContent =
                 error.message || "OCR processing failed.";
 
             ocrMessage.style.color = "#ff7777";
 
-        }
+        } finally {
 
-        await loadUploads();
+            button.disabled = false;
+            button.textContent = "EXTRACT TEXT";
+
+            await loadUploads();
+
+        }
 
     }
 
 
     // APPROVE AND PUBLISH EXTRACTED TEXT
+
     async function publishExtractedDocument(uploadId, button) {
 
         const textArea =
@@ -998,14 +1020,12 @@
         const content = textArea.value.trim();
 
         button.disabled = true;
-
         button.textContent = "PUBLISHING...";
 
         ocrMessage.textContent = "";
 
         try {
 
-            // Get document information
             const { data: doc, error: docError } =
                 await supabaseClient
                     .from("lesson_uploads")
@@ -1023,42 +1043,31 @@
 
             }
 
-            // Create lesson
             const { error: lessonError } =
                 await supabaseClient
                     .from("lessons")
                     .insert({
 
                         subject_id: doc.subject_id,
-
                         category: "PDF Upload",
-
                         title: doc.title,
-
                         content: content,
-
                         examples: "",
-
                         exercises: "",
-
                         published: true,
-
                         published_at: new Date().toISOString(),
-
                         created_by: currentAdmin.id
 
                     });
 
             if (lessonError) throw lessonError;
 
-            // Update document status
             const { error: updateError } =
                 await supabaseClient
                     .from("lesson_uploads")
                     .update({
 
                         status: "published",
-
                         extracted_text: content
 
                     })
@@ -1090,7 +1099,6 @@
             ocrMessage.style.color = "#ff7777";
 
             button.disabled = false;
-
             button.textContent = "APPROVE & PUBLISH";
 
         }
@@ -1099,6 +1107,7 @@
 
 
     // DOCUMENT BUTTON ACTIONS
+
     uploadsList.addEventListener("click", async function(event) {
 
         const button =
@@ -1124,11 +1133,13 @@
 
 
     // REFRESH DOCUMENTS
+
     document.getElementById("refreshUploadsBtn")
         .addEventListener("click", loadUploads);
 
 
     // INVITE STUDENT
+
     inviteForm.addEventListener("submit", async function(event) {
 
         event.preventDefault();
@@ -1142,7 +1153,6 @@
                 .value.trim();
 
         inviteBtn.disabled = true;
-
         inviteBtn.textContent = "SENDING INVITATION...";
 
         inviteMessage.textContent = "";
@@ -1183,7 +1193,6 @@
         } finally {
 
             inviteBtn.disabled = false;
-
             inviteBtn.textContent = "INVITE STUDENT";
 
         }
@@ -1192,6 +1201,7 @@
 
 
     // LOG OUT
+
     document.getElementById("logoutBtn")
         .addEventListener("click", async function() {
 
@@ -1203,6 +1213,7 @@
 
 
     // START ADMIN DASHBOARD
+
     async function startAdminDashboard() {
 
         const isAdmin = await checkAdmin();
