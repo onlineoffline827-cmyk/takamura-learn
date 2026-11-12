@@ -55,22 +55,25 @@
         }
 
         .lesson-card {
+            display: block;
             background: #080f20;
             border: 1px solid #00d9ff;
             border-radius: 12px;
             padding: 22px;
             margin-bottom: 20px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-4px);
+            background: #101d33;
+            box-shadow: 0 5px 18px rgba(0, 217, 255, 0.15);
         }
 
         .lesson-card h3 {
             color: #00d9ff;
             margin-bottom: 12px;
-        }
-
-        .lesson-card p {
-            color: #ddd;
-            line-height: 1.7;
-            white-space: pre-wrap;
         }
 
         .lesson-category {
@@ -79,19 +82,24 @@
             margin-bottom: 10px;
         }
 
-        .lesson-section {
-            margin-top: 18px;
-        }
-
-        .lesson-section h4 {
+        .open-lesson {
+            display: inline-block;
             color: #00d9ff;
-            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 15px;
         }
 
         #summaryStatus {
             color: #aaa;
             text-align: center;
             margin-bottom: 15px;
+        }
+
+        #summaryError {
+            color: #ff7777;
+            text-align: center;
+            padding: 20px;
         }
     </style>
 </head>
@@ -111,7 +119,7 @@
         <a href="profile.html">PROFILE</a>
     </nav>
 
-    <button id="languageBtn">🇸🇴 SOMALI</button>
+    <button id="languageBtn" onclick="toggleLanguage()">🇸🇴 SOMALI</button>
 </header>
 
 <a href="dashboard.html" class="back-dashboard">
@@ -132,13 +140,15 @@
 
         <div id="summaryList"></div>
 
-        <div class="summary-empty" id="summaryEmpty" style="display:none;">
+        <div class="summary-empty" id="summaryEmpty" hidden>
             <h3>📚 NO LESSONS AVAILABLE YET</h3>
             <p>
                 English lesson summaries will appear here
                 when they are published by the administrator.
             </p>
         </div>
+
+        <p id="summaryError" hidden></p>
 
     </section>
 
@@ -157,20 +167,26 @@
 document.addEventListener("DOMContentLoaded", loadEnglishLessons);
 
 async function loadEnglishLessons() {
+
     const list = document.getElementById("summaryList");
     const empty = document.getElementById("summaryEmpty");
     const status = document.getElementById("summaryStatus");
+    const errorBox = document.getElementById("summaryError");
+
+    list.replaceChildren();
+    empty.hidden = true;
+    errorBox.hidden = true;
+    status.style.display = "block";
+    status.textContent = "Loading English lessons...";
 
     try {
+
         const { data, error } = await supabaseClient
             .from("lessons")
             .select(`
                 id,
                 title,
                 category,
-                content,
-                examples,
-                exercises,
                 published_at,
                 subjects!inner(name)
             `)
@@ -183,55 +199,44 @@ async function loadEnglishLessons() {
         status.style.display = "none";
 
         if (!data || data.length === 0) {
-            empty.style.display = "block";
+            empty.hidden = false;
             return;
         }
 
-        empty.style.display = "none";
-
-        list.innerHTML = "";
-
         data.forEach(lesson => {
-            const card = document.createElement("article");
-            card.className = "lesson-card";
 
-            const title = document.createElement("h3");
-            title.textContent = lesson.title || "Untitled Lesson";
+            const card = document.createElement("a");
+
+            card.className = "lesson-card";
+            card.href = "lesson-paper.html?id=" +
+                encodeURIComponent(lesson.id);
 
             const category = document.createElement("div");
             category.className = "lesson-category";
             category.textContent = lesson.category || "English";
 
-            card.appendChild(category);
-            card.appendChild(title);
+            const title = document.createElement("h3");
+            title.textContent = lesson.title || "Untitled Lesson";
 
-            function addSection(heading, content) {
-                if (!content) return;
+            const openText = document.createElement("span");
+            openText.className = "open-lesson";
+            openText.textContent = "OPEN LESSON →";
 
-                const section = document.createElement("div");
-                section.className = "lesson-section";
-
-                const h4 = document.createElement("h4");
-                h4.textContent = heading;
-
-                const paragraph = document.createElement("p");
-                paragraph.textContent = content;
-
-                section.appendChild(h4);
-                section.appendChild(paragraph);
-                card.appendChild(section);
-            }
-
-            addSection("Lesson Content", lesson.content);
-            addSection("Examples", lesson.examples);
-            addSection("Exercises", lesson.exercises);
+            card.append(category, title, openText);
 
             list.appendChild(card);
+
         });
 
     } catch (error) {
+
         console.error("English lessons error:", error);
-        status.textContent = "Unable to load English lessons. Please try again.";
+
+        status.style.display = "none";
+        errorBox.hidden = false;
+
+        errorBox.textContent =
+            "Unable to load English lessons. Please try again.";
     }
 }
 </script>
