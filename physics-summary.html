@@ -57,11 +57,20 @@
         }
 
         .lesson-card {
+            display: block;
             background: #080f20;
             border: 1px solid #00d9ff;
             border-radius: 12px;
             padding: 22px;
             margin-bottom: 22px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-4px);
+            background: #101d33;
+            box-shadow: 0 5px 18px rgba(0, 217, 255, 0.15);
         }
 
         .lesson-card h3 {
@@ -75,22 +84,12 @@
             margin-bottom: 18px;
         }
 
-        .lesson-section {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid #26364a;
-        }
-
-        .lesson-section h4 {
+        .open-lesson {
+            display: inline-block;
             color: #00d9ff;
-            margin-bottom: 10px;
-        }
-
-        .lesson-section p {
-            color: #ddd;
-            line-height: 1.8;
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 5px;
         }
 
         .lesson-loading,
@@ -187,9 +186,6 @@ async function loadPhysicsLessons() {
                 id,
                 category,
                 title,
-                content,
-                examples,
-                exercises,
                 created_at,
                 subjects!inner(name)
             `)
@@ -208,8 +204,11 @@ async function loadPhysicsLessons() {
 
         data.forEach(lesson => {
 
-            const card = document.createElement("article");
+            const card = document.createElement("a");
+
             card.className = "lesson-card";
+            card.href = "lesson-paper.html?id=" +
+                encodeURIComponent(lesson.id);
 
             const title = document.createElement("h3");
             title.textContent = lesson.title || "Untitled Lesson";
@@ -219,11 +218,11 @@ async function loadPhysicsLessons() {
             category.textContent =
                 "Category: " + (lesson.category || "General");
 
-            card.append(title, category);
+            const openText = document.createElement("span");
+            openText.className = "open-lesson";
+            openText.textContent = "OPEN LESSON →";
 
-            addPhysicsSection(card, "Lesson Summary", lesson.content);
-            addPhysicsSection(card, "Examples", lesson.examples);
-            addPhysicsSection(card, "Exercises", lesson.exercises);
+            card.append(title, category, openText);
 
             summaryList.appendChild(card);
 
@@ -233,29 +232,12 @@ async function loadPhysicsLessons() {
 
         loading.hidden = true;
         errorBox.hidden = false;
+
         errorBox.textContent =
             "Unable to load Physics lessons. Please try again.";
 
         console.error("Physics lessons error:", error);
-
     }
-}
-
-function addPhysicsSection(card, heading, content) {
-
-    if (!content || !content.trim()) return;
-
-    const section = document.createElement("div");
-    section.className = "lesson-section";
-
-    const title = document.createElement("h4");
-    title.textContent = heading;
-
-    const paragraph = document.createElement("p");
-    paragraph.textContent = content;
-
-    section.append(title, paragraph);
-    card.appendChild(section);
 }
 </script>
 
