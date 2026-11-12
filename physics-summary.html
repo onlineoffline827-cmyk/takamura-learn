@@ -55,6 +55,54 @@
             color: #ccc;
             line-height: 1.7;
         }
+
+        .lesson-card {
+            background: #080f20;
+            border: 1px solid #00d9ff;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 22px;
+        }
+
+        .lesson-card h3 {
+            color: #00d9ff;
+            margin-bottom: 10px;
+        }
+
+        .lesson-category {
+            color: #aaa;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .lesson-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #26364a;
+        }
+
+        .lesson-section h4 {
+            color: #00d9ff;
+            margin-bottom: 10px;
+        }
+
+        .lesson-section p {
+            color: #ddd;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .lesson-loading,
+        .lesson-error {
+            text-align: center;
+            padding: 25px;
+            color: #00d9ff;
+        }
+
+        .lesson-error {
+            color: #ff7777;
+        }
     </style>
 </head>
 
@@ -88,11 +136,9 @@
 
 <section class="summary-container">
 
-    <!-- Published Physics lessons will appear here -->
     <div id="summaryList"></div>
 
-    <!-- Displayed when no lessons are available -->
-    <div class="empty-summary" id="summaryEmpty">
+    <div class="empty-summary" id="summaryEmpty" hidden>
         <h3>NO LESSONS AVAILABLE YET</h3>
 
         <p>
@@ -101,6 +147,12 @@
         </p>
     </div>
 
+    <p id="lessonLoading" class="lesson-loading">
+        Loading Physics lessons...
+    </p>
+
+    <p id="lessonError" class="lesson-error" hidden></p>
+
 </section>
 
 <footer>
@@ -108,7 +160,104 @@
     <p>LEARN • UNDERSTAND • SUCCEED</p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
 <script src="script.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", loadPhysicsLessons);
+
+async function loadPhysicsLessons() {
+
+    const summaryList = document.getElementById("summaryList");
+    const summaryEmpty = document.getElementById("summaryEmpty");
+    const loading = document.getElementById("lessonLoading");
+    const errorBox = document.getElementById("lessonError");
+
+    summaryList.replaceChildren();
+    summaryEmpty.hidden = true;
+    errorBox.hidden = true;
+    loading.hidden = false;
+
+    try {
+
+        const { data, error } = await supabaseClient
+            .from("lessons")
+            .select(`
+                id,
+                category,
+                title,
+                content,
+                examples,
+                exercises,
+                created_at,
+                subjects!inner(name)
+            `)
+            .eq("subjects.name", "Physics")
+            .eq("published", true)
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        loading.hidden = true;
+
+        if (!data || data.length === 0) {
+            summaryEmpty.hidden = false;
+            return;
+        }
+
+        data.forEach(lesson => {
+
+            const card = document.createElement("article");
+            card.className = "lesson-card";
+
+            const title = document.createElement("h3");
+            title.textContent = lesson.title || "Untitled Lesson";
+
+            const category = document.createElement("p");
+            category.className = "lesson-category";
+            category.textContent =
+                "Category: " + (lesson.category || "General");
+
+            card.append(title, category);
+
+            addPhysicsSection(card, "Lesson Summary", lesson.content);
+            addPhysicsSection(card, "Examples", lesson.examples);
+            addPhysicsSection(card, "Exercises", lesson.exercises);
+
+            summaryList.appendChild(card);
+
+        });
+
+    } catch (error) {
+
+        loading.hidden = true;
+        errorBox.hidden = false;
+        errorBox.textContent =
+            "Unable to load Physics lessons. Please try again.";
+
+        console.error("Physics lessons error:", error);
+
+    }
+}
+
+function addPhysicsSection(card, heading, content) {
+
+    if (!content || !content.trim()) return;
+
+    const section = document.createElement("div");
+    section.className = "lesson-section";
+
+    const title = document.createElement("h4");
+    title.textContent = heading;
+
+    const paragraph = document.createElement("p");
+    paragraph.textContent = content;
+
+    section.append(title, paragraph);
+    card.appendChild(section);
+}
+</script>
 
 </body>
 </html>
