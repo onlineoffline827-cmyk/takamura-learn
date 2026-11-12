@@ -144,9 +144,17 @@
             }
         }
 
+        /* MULTI-PAGE PDF PRINT SETTINGS */
         @media print {
+
+            html,
             body {
                 background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                overflow: visible !important;
             }
 
             header,
@@ -156,16 +164,53 @@
                 display: none !important;
             }
 
-            .paper {
-                max-width: none;
-                min-height: 0;
-                margin: 0;
-                padding: 20px;
-                box-shadow: none;
-                border-radius: 0;
+            main.paper {
+                display: block !important;
+                width: 100% !important;
+                max-width: none !important;
+                min-height: 0 !important;
+                height: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                overflow: visible !important;
+            }
+
+            .paper-header {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            .paper-section {
+                break-inside: auto;
+                page-break-inside: auto;
+            }
+
+            .paper-section h2 {
+                break-after: avoid;
+                page-break-after: avoid;
+            }
+
+            .paper-title {
+                break-after: avoid;
+                page-break-after: avoid;
+            }
+
+            .paper-section p {
+                white-space: pre-wrap !important;
+                overflow-wrap: anywhere;
+                break-inside: auto;
+                page-break-inside: auto;
+            }
+
+            .paper-footer {
+                break-inside: avoid;
+                page-break-inside: avoid;
             }
 
             @page {
+                size: A4;
                 margin: 18mm;
             }
         }
@@ -181,6 +226,7 @@
 
 <div class="paper-actions">
     <a href="dashboard.html" class="paper-btn">← DASHBOARD</a>
+
     <button class="paper-btn" onclick="window.print()">
         PRINT / SAVE PDF
     </button>
@@ -231,6 +277,7 @@
 document.addEventListener("DOMContentLoaded", loadLessonPaper);
 
 async function loadLessonPaper() {
+
     const status = document.getElementById("paperStatus");
     const paper = document.getElementById("lessonPaper");
 
@@ -243,6 +290,7 @@ async function loadLessonPaper() {
     }
 
     try {
+
         const { data, error } = await supabaseClient
             .from("lessons")
             .select(`
@@ -279,14 +327,18 @@ async function loadLessonPaper() {
             data.content || "No lesson content available.";
 
         if (data.examples && data.examples.trim()) {
+
             document.getElementById("paperExamples").textContent =
                 data.examples;
+
             document.getElementById("examplesSection").hidden = false;
         }
 
         if (data.exercises && data.exercises.trim()) {
+
             document.getElementById("paperExercises").textContent =
                 data.exercises;
+
             document.getElementById("exercisesSection").hidden = false;
         }
 
@@ -297,7 +349,9 @@ async function loadLessonPaper() {
         paper.hidden = false;
 
     } catch (error) {
+
         console.error("Lesson paper error:", error);
+
         status.textContent =
             "Unable to open this lesson. Please try again.";
     }
