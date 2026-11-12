@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics | Takamura Learn</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .back-dashboard {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px;
+            padding: 11px 16px;
+            color: #00d9ff;
+            text-decoration: none;
+            border: 1px solid #00d9ff;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .back-dashboard:hover {
+            background: #00d9ff;
+            color: #050914;
+        }
+
+        .lesson-summary-card {
+            max-width: 500px;
+            margin: 20px auto 70px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>TAKAMURA LEARN</h1>
+    <p>LEARN • UNDERSTAND • SUCCEED</p>
+
+    <nav>
+        <a href="index.html">HOME</a>
+        <a href="lessons.html">LESSONS</a>
+        <a href="pdf-library.html">PDF LIBRARY</a>
+        <a href="ai-assistant.html">AI ASSISTANT</a>
+        <a href="my-requests.html">MY REQUESTS</a>
+        <a href="profile.html">PROFILE</a>
+    </nav>
+
+    <button id="languageBtn" onclick="toggleLanguage()">SOMALI</button>
+</header>
+
+<a href="dashboard.html" class="back-dashboard">
+    <span>←</span>
+    <span>BACK TO DASHBOARD</span>
+</a>
+
+<section class="hero">
+    <h2>PHYSICS</h2>
+    <p>Welcome to your Physics learning classroom.</p>
+</section>
+
+<section class="dashboard-grid">
+
+    <a href="physics-summary.html" class="dashboard-card lesson-summary-card">
+        <h2>📚</h2>
+        <h3>LESSON SUMMARY</h3>
+        <p>Explore summarized Physics lessons.</p>
+    </a>
+
+</section>
+
+<footer>
+    <p>© 2026 TAKAMURA LEARN</p>
+    <p>LEARN • UNDERSTAND • SUCCEED</p>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
