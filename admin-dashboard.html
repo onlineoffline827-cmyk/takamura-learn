@@ -132,6 +132,41 @@
         section {
             scroll-margin-top: 20px;
         }
+
+        /* OCR DOCUMENT LIBRARY */
+
+        .document-card {
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 18px;
+            overflow-wrap: anywhere;
+        }
+
+        .document-card h3 {
+            color: #00d9ff;
+            margin-bottom: 10px;
+        }
+
+        .document-status {
+            color: #00d9ff;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .document-card textarea {
+            min-height: 250px;
+            line-height: 1.7;
+            margin-top: 10px;
+        }
+
+        .document-card button {
+            margin-top: 15px;
+        }
+
+        #refreshUploadsBtn {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
@@ -150,6 +185,8 @@
     <a href="#publishLesson">PUBLISH LESSON</a>
 
     <a href="#uploadFile">UPLOAD PDF</a>
+
+    <a href="#ocrLibrary">DOCUMENT LIBRARY</a>
 
     <a href="#inviteStudent">INVITE STUDENT</a>
 
@@ -300,6 +337,31 @@
     </section>
 
 
+    <!-- OCR DOCUMENT LIBRARY -->
+    <section class="admin-card" id="ocrLibrary">
+
+        <h2>DOCUMENT LIBRARY</h2>
+
+        <p class="section-description">
+            Review uploaded documents, extract their text
+            and publish lessons to the selected subjects.
+        </p>
+
+        <button type="button" id="refreshUploadsBtn">
+            REFRESH DOCUMENTS
+        </button>
+
+        <div id="uploadsList">
+            <p class="file-info">Loading documents...</p>
+        </div>
+
+        <p id="ocrMessage"
+           class="status-message"
+           role="status"></p>
+
+    </section>
+
+
     <!-- INVITE STUDENT -->
     <section class="admin-card" id="inviteStudent">
 
@@ -363,6 +425,9 @@
 
     const subjectSelect = document.getElementById("lessonSubject");
     const uploadSubject = document.getElementById("uploadSubject");
+
+    const uploadsList = document.getElementById("uploadsList");
+    const ocrMessage = document.getElementById("ocrMessage");
 
     const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
@@ -623,7 +688,6 @@
 
         try {
 
-            // Create a safe unique file path
             const safeFileName = file.name
                 .replace(/[^a-zA-Z0-9._-]/g, "_")
                 .slice(-100);
@@ -633,7 +697,6 @@
                 Date.now() + "-" +
                 safeFileName;
 
-            // Upload file to Supabase Storage
             const { data: storageData, error: storageError } =
                 await supabaseClient
                     .storage
@@ -648,26 +711,18 @@
 
             uploadedPath = storageData.path;
 
-            // Save document information
             const { error: databaseError } =
                 await supabaseClient
                     .from("lesson_uploads")
                     .insert({
 
                         subject_id: subjectId,
-
                         title: title,
-
                         file_path: uploadedPath,
-
                         file_name: file.name,
-
                         mime_type: file.type,
-
                         file_size: file.size,
-
                         status: "pending_ocr",
-
                         created_by: currentAdmin.id
 
                     });
@@ -681,9 +736,10 @@
 
             uploadForm.reset();
 
+            await loadUploads();
+
         } catch (error) {
 
-            // Remove uploaded file if database save failed
             if (uploadedPath) {
 
                 const { error: cleanupError } =
@@ -717,6 +773,361 @@
     });
 
 
+    // LOAD DOCUMENT LIBRARY
+    async function loadUploads() {
+
+        uploadsList.textContent = "Loading documents...";
+
+        const { data, error } =
+            await supabaseClient
+                .from("lesson_uploads")
+                .select(`
+                    id,
+                    title,
+                    file_name,
+                    mime_type,
+                    file_size,
+                    subject_id,
+                    status,
+                    extracted_text,
+                    created_at
+                `)
+                .order("created_at", { ascending: false });
+
+        if (error) {
+
+            uploadsList.textContent = error.message;
+
+            return;
+        }
+
+        uploadsList.innerHTML = "";
+
+        if (!data || data.length === 0) {
+
+            uploadsList.textContent =
+                "No documents uploaded yet.";
+
+            return;
+        }
+
+        data.forEach(function(doc) {
+
+            const card = document.createElement("div");
+
+            card.className = "document-card";
+
+            const title = document.createElement("h3");
+
+            title.textContent = doc.title;
+
+            const fileName = document.createElement("p");
+
+            fileName.className = "file-info";
+            fileName.textContent = doc.file_name;
+
+            const status = document.createElement("p");
+
+            status.className = "document-status";
+            status.textContent =
+                "STATUS: " + doc.status.toUpperCase();
+
+            card.append(title, fileName, status);
+
+
+            // OCR COMPLETED: REVIEW AND PUBLISH
+            if (doc.status === "ocr_completed") {
+
+                const textLabel = document.createElement("label");
+
+                textLabel.textContent =
+                    "REVIEW EXTRACTED TEXT";
+
+                const textArea = document.createElement("textarea");
+
+                textArea.value = doc.extracted_text || "";
+
+                textArea.id = "ocr-text-" + doc.id;
+
+                const publishButton =
+                    document.createElement("button");
+
+                publishButton.type = "button";
+
+                publishButton.textContent =
+                    "APPROVE & PUBLISH";
+
+                publishButton.dataset.action = "publish";
+
+                publishButton.dataset.id = doc.id;
+
+                card.append(
+                    textLabel,
+                    textArea,
+                    publishButton
+                );
+
+            }
+
+            // DOCUMENT NOT YET PROCESSED
+            else if (
+                doc.status !== "published" &&
+                doc.status !== "processing"
+            ) {
+
+                const extractButton =
+                    document.createElement("button");
+
+                extractButton.type = "button";
+
+                extractButton.textContent =
+                    doc.status === "ocr_failed"
+                        ? "RETRY OCR"
+                        : "EXTRACT TEXT";
+
+                extractButton.dataset.action = "extract";
+
+                extractButton.dataset.id = doc.id;
+
+                card.appendChild(extractButton);
+
+            }
+
+            // PROCESSING
+            else if (doc.status === "processing") {
+
+                const waiting = document.createElement("p");
+
+                waiting.className = "file-info";
+
+                waiting.textContent =
+                    "OCR is processing. Refresh later.";
+
+                card.appendChild(waiting);
+
+            }
+
+            // PUBLISHED
+            else {
+
+                const published = document.createElement("p");
+
+                published.className = "file-info";
+
+                published.textContent =
+                    "This document has been published.";
+
+                card.appendChild(published);
+
+            }
+
+            uploadsList.appendChild(card);
+
+        });
+
+    }
+
+
+    // PROCESS OCR
+    async function processDocument(uploadId, button) {
+
+        button.disabled = true;
+
+        button.textContent = "EXTRACTING TEXT...";
+
+        ocrMessage.textContent =
+            "OCR is processing your document. Please wait.";
+
+        ocrMessage.style.color = "#00d9ff";
+
+        try {
+
+            const { data, error } =
+                await supabaseClient.functions.invoke(
+                    "process-lesson-ocr",
+                    {
+                        body: {
+                            upload_id: uploadId
+                        }
+                    }
+                );
+
+            if (error) throw error;
+
+            if (data?.error) {
+                throw new Error(data.error);
+            }
+
+            ocrMessage.textContent =
+                "OCR COMPLETED! REVIEW THE EXTRACTED TEXT BELOW.";
+
+            ocrMessage.style.color = "#00d9ff";
+
+        } catch (error) {
+
+            console.error("OCR error:", error);
+
+            ocrMessage.textContent =
+                error.message || "OCR processing failed.";
+
+            ocrMessage.style.color = "#ff7777";
+
+        }
+
+        await loadUploads();
+
+    }
+
+
+    // APPROVE AND PUBLISH EXTRACTED TEXT
+    async function publishExtractedDocument(uploadId, button) {
+
+        const textArea =
+            document.getElementById("ocr-text-" + uploadId);
+
+        if (!textArea || !textArea.value.trim()) {
+
+            ocrMessage.textContent =
+                "Extracted text is empty.";
+
+            ocrMessage.style.color = "#ff7777";
+
+            return;
+        }
+
+        const content = textArea.value.trim();
+
+        button.disabled = true;
+
+        button.textContent = "PUBLISHING...";
+
+        ocrMessage.textContent = "";
+
+        try {
+
+            // Get document information
+            const { data: doc, error: docError } =
+                await supabaseClient
+                    .from("lesson_uploads")
+                    .select("id, title, subject_id, status")
+                    .eq("id", uploadId)
+                    .single();
+
+            if (docError) throw docError;
+
+            if (doc.status !== "ocr_completed") {
+
+                throw new Error(
+                    "Document is not ready for publishing."
+                );
+
+            }
+
+            // Create lesson
+            const { error: lessonError } =
+                await supabaseClient
+                    .from("lessons")
+                    .insert({
+
+                        subject_id: doc.subject_id,
+
+                        category: "PDF Upload",
+
+                        title: doc.title,
+
+                        content: content,
+
+                        examples: "",
+
+                        exercises: "",
+
+                        published: true,
+
+                        published_at: new Date().toISOString(),
+
+                        created_by: currentAdmin.id
+
+                    });
+
+            if (lessonError) throw lessonError;
+
+            // Update document status
+            const { error: updateError } =
+                await supabaseClient
+                    .from("lesson_uploads")
+                    .update({
+
+                        status: "published",
+
+                        extracted_text: content
+
+                    })
+                    .eq("id", uploadId);
+
+            if (updateError) {
+
+                throw new Error(
+                    "Lesson was published, but document status update failed: " +
+                    updateError.message
+                );
+
+            }
+
+            ocrMessage.textContent =
+                "SUCCESS! LESSON PUBLISHED.";
+
+            ocrMessage.style.color = "#00d9ff";
+
+            await loadUploads();
+
+        } catch (error) {
+
+            console.error("Publishing error:", error);
+
+            ocrMessage.textContent =
+                error.message || "Publishing failed.";
+
+            ocrMessage.style.color = "#ff7777";
+
+            button.disabled = false;
+
+            button.textContent = "APPROVE & PUBLISH";
+
+        }
+
+    }
+
+
+    // DOCUMENT BUTTON ACTIONS
+    uploadsList.addEventListener("click", async function(event) {
+
+        const button =
+            event.target.closest("button[data-action]");
+
+        if (!button) return;
+
+        const uploadId = button.dataset.id;
+
+        if (button.dataset.action === "extract") {
+
+            await processDocument(uploadId, button);
+
+        }
+
+        if (button.dataset.action === "publish") {
+
+            await publishExtractedDocument(uploadId, button);
+
+        }
+
+    });
+
+
+    // REFRESH DOCUMENTS
+    document.getElementById("refreshUploadsBtn")
+        .addEventListener("click", loadUploads);
+
+
     // INVITE STUDENT
     inviteForm.addEventListener("submit", async function(event) {
 
@@ -731,6 +1142,7 @@
                 .value.trim();
 
         inviteBtn.disabled = true;
+
         inviteBtn.textContent = "SENDING INVITATION...";
 
         inviteMessage.textContent = "";
@@ -741,7 +1153,10 @@
                 await supabaseClient.functions.invoke(
                     "invite-student",
                     {
-                        body: { full_name, email }
+                        body: {
+                            full_name,
+                            email
+                        }
                     }
                 );
 
@@ -768,6 +1183,7 @@
         } finally {
 
             inviteBtn.disabled = false;
+
             inviteBtn.textContent = "INVITE STUDENT";
 
         }
@@ -794,6 +1210,8 @@
         if (!isAdmin) return;
 
         await loadSubjects();
+
+        await loadUploads();
 
     }
 
