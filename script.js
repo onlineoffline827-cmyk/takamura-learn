@@ -55,7 +55,7 @@ const translations = {
         englishPageText: "Welcome to your English learning classroom.",
 
         lessonSummary: "LESSON SUMMARY",
-        lessonSummaryText: "Explore summarized English lessons.",
+        lessonSummaryText: "Explore summarized lessons.",
         summaryTitle: "ENGLISH LESSON SUMMARY",
         summaryText: "Explore your summarized English lessons.",
 
@@ -137,7 +137,7 @@ const translations = {
         englishPageText: "Ku soo dhowow fasalkaaga barashada Ingiriisiga.",
 
         lessonSummary: "SOO KOOBIDDA CASHARRADA",
-        lessonSummaryText: "Baadh casharrada Ingiriisiga oo la soo koobay.",
+        lessonSummaryText: "Baadh casharrada la soo koobay.",
         summaryTitle: "SOO KOOBIDDA CASHARRADA INGIRIISIGA",
         summaryText: "Baadh casharradaada Ingiriisiga ee la soo koobay.",
 
@@ -223,7 +223,6 @@ function changeLanguage() {
         document.querySelector(".hero h2").textContent = t.englishTitle;
         document.querySelector(".hero p").textContent = t.englishPageText;
 
-        // ENGLISH PAGE: LESSON SUMMARY ONLY
         const cards = document.querySelectorAll(".dashboard-card");
         const titles = [t.lessonSummary];
         const descriptions = [t.lessonSummaryText];
@@ -255,9 +254,10 @@ function changeLanguage() {
         document.querySelector(".hero h2").textContent = t.biologyTitle;
         document.querySelector(".hero p").textContent = t.biologyPageText;
 
+        // BIOLOGY PAGE: LESSON SUMMARY ONLY
         const cards = document.querySelectorAll(".dashboard-card");
-        const titles = [t.cellBiology, t.humanBiology, t.plantBiology, t.biologyExercises];
-        const descriptions = [t.cellBiologyText, t.humanBiologyText, t.plantBiologyText, t.biologyExercisesText];
+        const titles = [t.lessonSummary];
+        const descriptions = [t.lessonSummaryText];
 
         cards.forEach((card, i) => {
             if (titles[i]) card.querySelector("h3").textContent = titles[i];
