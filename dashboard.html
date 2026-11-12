@@ -65,99 +65,245 @@
         .hero p {
             margin-top: 12px;
         }
+
+        .logout-container {
+            text-align: center;
+            margin: 25px auto;
+        }
+
+        .logout-btn {
+            padding: 11px 25px;
+            background: transparent;
+            color: #ff7777;
+            border: 1px solid #ff7777;
+            border-radius: 7px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #ff7777;
+            color: #050914;
+        }
+
+        .dashboard-status {
+            text-align: center;
+            color: #00d9ff;
+            padding: 35px 15px;
+        }
+
+        .dashboard-error {
+            color: #ff7777;
+        }
     </style>
 </head>
 
 <body>
 
-    <header>
-        <h1>TAKAMURA LEARN</h1>
-        <p>STUDENT DASHBOARD</p>
+<header>
+    <h1>TAKAMURA LEARN</h1>
+    <p>STUDENT DASHBOARD</p>
 
-        <nav>
-            <a href="dashboard.html">HOME</a>
-            <a href="lessons.html">LESSONS</a>
-            <a href="pdf-library.html">PDF LIBRARY</a>
-            <a href="ai-assistant.html">AI ASSISTANT</a>
-            <a href="my-requests.html">MY REQUESTS</a>
-            <a href="profile.html">PROFILE</a>
-        </nav>
+    <nav>
+        <a href="dashboard.html">HOME</a>
+        <a href="lessons.html">LESSONS</a>
+        <a href="pdf-library.html">PDF LIBRARY</a>
+        <a href="ai-assistant.html">AI ASSISTANT</a>
+        <a href="my-requests.html">MY REQUESTS</a>
+        <a href="profile.html">PROFILE</a>
+    </nav>
 
-        <button id="languageBtn">🇸🇴 SOMALI</button>
-    </header>
+    <button id="languageBtn">🇸🇴 SOMALI</button>
+</header>
 
-    <main>
+<main id="dashboardContent" hidden>
 
-        <details class="creator-box">
-            <summary>✦ THE CREATOR IS SAYID ✦</summary>
+    <details class="creator-box">
+        <summary>✦ THE CREATOR IS SAYID ✦</summary>
 
-            <div class="creator-info">
-                <h3>CREATED BY SAYID</h3>
+        <div class="creator-info">
+            <h3>CREATED BY SAYID</h3>
 
-                <p>Have a question or need help?</p>
+            <p>Have a question or need help?</p>
 
-                <p style="margin-top: 12px;">
-                    <a href="https://wa.me/252657880835"
-                       target="_blank"
-                       rel="noopener">
-                        <span>●</span> WhatsApp: 657880835
-                    </a>
-                </p>
-            </div>
-        </details>
-
-        <section class="hero">
-
-            <h2>WELCOME, STUDENT!</h2>
-
-            <p>
-                Your learning dashboard is ready.
-                Choose a section below and continue learning.
+            <p style="margin-top: 12px;">
+                <a href="https://wa.me/252657880835"
+                   target="_blank"
+                   rel="noopener">
+                    <span>●</span> WhatsApp: 657880835
+                </a>
             </p>
+        </div>
+    </details>
 
-        </section>
+    <section class="hero">
 
-        <section class="dashboard-grid">
+        <h2 id="welcomeTitle">WELCOME, STUDENT!</h2>
 
-            <a href="lessons.html" class="dashboard-card">
-                <h2>📚</h2>
-                <h3>LESSONS</h3>
-                <p>Explore your lessons.</p>
-            </a>
+        <p>
+            Your learning dashboard is ready.
+            Choose a section below and continue learning.
+        </p>
 
-            <a href="pdf-library.html" class="dashboard-card">
-                <h2>📄</h2>
-                <h3>PDF LIBRARY</h3>
-                <p>Read and download study materials.</p>
-            </a>
+    </section>
 
-            <a href="ai-assistant.html" class="dashboard-card">
-                <h2>🤖</h2>
-                <h3>AI ASSISTANT</h3>
-                <p>Get help understanding lessons.</p>
-            </a>
+    <section class="dashboard-grid">
 
-            <a href="my-requests.html" class="dashboard-card">
-                <h2>✉️</h2>
-                <h3>MY REQUESTS</h3>
-                <p>Send private requests to the admin.</p>
-            </a>
+        <a href="lessons.html" class="dashboard-card">
+            <h2>📚</h2>
+            <h3>LESSONS</h3>
+            <p>Explore your lessons.</p>
+        </a>
 
-            <a href="profile.html" class="dashboard-card">
-                <h2>👤</h2>
-                <h3>MY PROFILE</h3>
-                <p>Manage your account.</p>
-            </a>
+        <a href="pdf-library.html" class="dashboard-card">
+            <h2>📄</h2>
+            <h3>PDF LIBRARY</h3>
+            <p>Read and download study materials.</p>
+        </a>
 
-        </section>
-    </main>
+        <a href="ai-assistant.html" class="dashboard-card">
+            <h2>🤖</h2>
+            <h3>AI ASSISTANT</h3>
+            <p>Get help understanding lessons.</p>
+        </a>
 
-    <footer>
-        <p>© 2026 TAKAMURA LEARN</p>
-        <p>Learn something new every day.</p>
-    </footer>
+        <a href="my-requests.html" class="dashboard-card">
+            <h2>✉️</h2>
+            <h3>MY REQUESTS</h3>
+            <p>Send private requests to the admin.</p>
+        </a>
 
-    <script src="script.js"></script>
+        <a href="profile.html" class="dashboard-card">
+            <h2>👤</h2>
+            <h3>MY PROFILE</h3>
+            <p>Manage your account.</p>
+        </a>
+
+    </section>
+
+    <div class="logout-container">
+        <button class="logout-btn" id="logoutBtn">
+            LOG OUT
+        </button>
+    </div>
+
+</main>
+
+<p id="dashboardStatus" class="dashboard-status">
+    Checking your account...
+</p>
+
+<footer>
+    <p>© 2026 TAKAMURA LEARN</p>
+    <p>Learn something new every day.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="script.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", checkStudentAccess);
+
+async function checkStudentAccess() {
+
+    const dashboard = document.getElementById("dashboardContent");
+    const status = document.getElementById("dashboardStatus");
+    const welcomeTitle = document.getElementById("welcomeTitle");
+
+    try {
+
+        const { data: sessionData, error: sessionError } =
+            await supabaseClient.auth.getSession();
+
+        if (sessionError) throw sessionError;
+
+        const session = sessionData.session;
+
+        if (!session) {
+            window.location.replace("login.html");
+            return;
+        }
+
+        const user = session.user;
+
+        const { data: profile, error: profileError } =
+            await supabaseClient
+                .from("profiles")
+                .select("full_name, role")
+                .eq("id", user.id)
+                .maybeSingle();
+
+        if (profileError) throw profileError;
+
+        if (!profile) {
+            status.textContent =
+                "Your account profile could not be found.";
+            status.classList.add("dashboard-error");
+            return;
+        }
+
+        if (profile.role === "admin") {
+            window.location.replace("admin-dashboard.html");
+            return;
+        }
+
+        if (profile.role !== "student") {
+            status.textContent =
+                "You do not have permission to access this dashboard.";
+            status.classList.add("dashboard-error");
+            return;
+        }
+
+        const studentName = profile.full_name || "Student";
+
+        welcomeTitle.textContent =
+            "WELCOME, " + studentName.toUpperCase() + "!";
+
+        status.hidden = true;
+        dashboard.hidden = false;
+
+    } catch (error) {
+
+        console.error("Dashboard access error:", error);
+
+        status.textContent =
+            "Unable to verify your account. Please try again.";
+
+        status.classList.add("dashboard-error");
+    }
+}
+
+document.getElementById("logoutBtn").addEventListener(
+    "click",
+    async function() {
+
+        const button = this;
+
+        button.disabled = true;
+        button.textContent = "LOGGING OUT...";
+
+        try {
+
+            const { error } = await supabaseClient.auth.signOut();
+
+            if (error) throw error;
+
+            window.location.replace("login.html");
+
+        } catch (error) {
+
+            console.error("Logout error:", error);
+
+            button.disabled = false;
+            button.textContent = "LOG OUT";
+
+            alert("Unable to log out. Please try again.");
+        }
+    }
+);
+</script>
 
 </body>
 </html>
