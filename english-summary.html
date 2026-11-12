@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ENGLISH LESSON SUMMARY - TAKAMURA LEARN</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .back-dashboard {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px;
+            padding: 11px 16px;
+            color: #00d9ff;
+            text-decoration: none;
+            border: 1px solid #00d9ff;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .back-dashboard:hover {
+            background: #00d9ff;
+            color: #050914;
+        }
+
+        .summary-container {
+            max-width: 1000px;
+            margin: 30px auto 70px;
+            padding: 20px;
+        }
+
+        .summary-empty {
+            background: #080f20;
+            border: 1px solid #00d9ff;
+            border-radius: 14px;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .summary-empty h3 {
+            color: #00d9ff;
+            margin-bottom: 15px;
+        }
+
+        .summary-empty p {
+            color: #aaa;
+            line-height: 1.7;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>TAKAMURA LEARN</h1>
+    <p>ENGLISH LESSON SUMMARY</p>
+
+    <nav>
+        <a href="dashboard.html">HOME</a>
+        <a href="lessons.html">LESSONS</a>
+        <a href="pdf-library.html">PDF LIBRARY</a>
+        <a href="ai-assistant.html">AI ASSISTANT</a>
+        <a href="my-requests.html">MY REQUESTS</a>
+        <a href="profile.html">PROFILE</a>
+    </nav>
+
+    <button id="languageBtn">🇸🇴 SOMALI</button>
+</header>
+
+<a href="dashboard.html" class="back-dashboard">
+    <span>←</span>
+    <span>BACK TO DASHBOARD</span>
+</a>
+
+<main>
+
+    <section class="hero">
+        <h2>ENGLISH LESSON SUMMARY</h2>
+        <p>Explore your summarized English lessons.</p>
+    </section>
+
+    <section class="summary-container">
+
+        <div class="summary-empty">
+            <h3>📚 NO LESSONS AVAILABLE YET</h3>
+
+            <p>
+                English lesson summaries will appear here
+                when they are published by the administrator.
+            </p>
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 TAKAMURA LEARN</p>
+    <p>Learn something new every day.</p>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
