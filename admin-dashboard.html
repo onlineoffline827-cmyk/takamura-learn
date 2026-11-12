@@ -10,17 +10,51 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .admin-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px;
+            background: #080f20;
+            border-bottom: 1px solid #00d9ff;
+        }
+
+        .admin-nav a,
+        .admin-nav button {
+            color: #00d9ff;
+            text-decoration: none;
+            padding: 10px 14px;
+            border: 1px solid #00d9ff;
+            border-radius: 7px;
+            background: transparent;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .admin-nav a:hover,
+        .admin-nav button:hover {
+            background: #00d9ff;
+            color: #050914;
+        }
+
         .admin-container {
-            max-width: 650px;
-            margin: 50px auto;
-            padding: 25px;
+            max-width: 750px;
+            margin: 35px auto;
+            padding: 20px;
         }
 
         .admin-card {
             background: #080f20;
             border: 1px solid #00d9ff;
             border-radius: 15px;
-            padding: 30px;
+            padding: 25px;
             margin-top: 25px;
         }
 
@@ -36,14 +70,22 @@
             margin: 15px 0 8px;
         }
 
-        .admin-card input {
+        .admin-card input,
+        .admin-card select,
+        .admin-card textarea {
             width: 100%;
-            padding: 14px;
+            padding: 13px;
             background: #050914;
             color: white;
             border: 1px solid #334155;
             border-radius: 7px;
-            font-size: 16px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        .admin-card textarea {
+            min-height: 130px;
+            resize: vertical;
         }
 
         .admin-card button,
@@ -59,147 +101,447 @@
             cursor: pointer;
         }
 
-        #message {
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .status-message {
             margin-top: 15px;
             line-height: 1.6;
+        }
+
+        .section-description {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        section {
+            scroll-margin-top: 20px;
         }
     </style>
 </head>
 
 <body>
 
-    <header>
-        <h1>TAKAMURA LEARN</h1>
-        <p>ADMINISTRATION PANEL</p>
-    </header>
+<header>
+    <h1>TAKAMURA LEARN</h1>
+    <p>ADMINISTRATION PANEL</p>
+</header>
 
-    <main class="admin-container">
+<!-- ADMIN MENU -->
+<nav class="admin-nav">
+
+    <a href="#dashboard">DASHBOARD</a>
+
+    <a href="#publishLesson">PUBLISH LESSON</a>
+
+    <a href="#inviteStudent">INVITE STUDENT</a>
+
+    <button type="button" id="logoutBtn">LOG OUT</button>
+
+</nav>
+
+<main class="admin-container">
+
+    <!-- DASHBOARD -->
+    <section id="dashboard">
 
         <h2>WELCOME, ADMIN</h2>
-        <p>Manage your students and learning platform.</p>
 
-        <section class="admin-card">
+        <p class="section-description">
+            Manage your students and learning platform.
+        </p>
 
-            <h2>INVITE NEW STUDENT</h2>
+    </section>
 
-            <form id="inviteForm">
 
-                <label for="studentName">STUDENT FULL NAME</label>
+    <!-- PUBLISH LESSON -->
+    <section class="admin-card" id="publishLesson">
 
-                <input
-                    type="text"
-                    id="studentName"
-                    placeholder="Enter student's full name"
-                    required
-                >
+        <h2>PUBLISH NEW LESSON</h2>
 
-                <label for="studentEmail">STUDENT GMAIL</label>
+        <p class="section-description">
+            Create and publish lessons for your students.
+        </p>
 
-                <input
-                    type="email"
-                    id="studentEmail"
-                    placeholder="Enter student's Gmail"
-                    required
-                >
+        <form id="publishForm">
 
-                <button type="submit" id="inviteBtn">
-                    INVITE STUDENT
-                </button>
+            <label for="lessonSubject">SELECT SUBJECT</label>
 
-            </form>
+            <select id="lessonSubject" required>
+                <option value="">LOADING SUBJECTS...</option>
+            </select>
 
-            <p id="message" role="status"></p>
+            <label for="lessonCategory">LESSON CATEGORY</label>
 
-        </section>
+            <input
+                type="text"
+                id="lessonCategory"
+                placeholder="Example: Chapter 1"
+            >
 
-        <button id="logoutBtn">LOG OUT</button>
+            <label for="lessonTitle">LESSON TITLE</label>
 
-    </main>
+            <input
+                type="text"
+                id="lessonTitle"
+                placeholder="Enter lesson title"
+                required
+            >
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase.js"></script>
+            <label for="lessonContent">LESSON SUMMARY</label>
 
-    <script>
-        const inviteForm = document.getElementById("inviteForm");
-        const inviteBtn = document.getElementById("inviteBtn");
-        const message = document.getElementById("message");
+            <textarea
+                id="lessonContent"
+                placeholder="Write your lesson summary here..."
+                required
+            ></textarea>
 
-        async function checkAdmin() {
-            const { data: { user }, error } =
-                await supabaseClient.auth.getUser();
+            <label for="lessonExamples">EXAMPLES</label>
 
-            if (error || !user) {
-                window.location.href = "login.html";
-                return false;
-            }
+            <textarea
+                id="lessonExamples"
+                placeholder="Write lesson examples here..."
+            ></textarea>
 
-            const { data: profile, error: profileError } =
-                await supabaseClient
-                    .from("profiles")
-                    .select("role")
-                    .eq("id", user.id)
-                    .single();
+            <label for="lessonExercises">EXERCISES</label>
 
-            if (profileError || profile?.role !== "admin") {
-                await supabaseClient.auth.signOut();
-                window.location.href = "login.html";
-                return false;
-            }
+            <textarea
+                id="lessonExercises"
+                placeholder="Write exercises here..."
+            ></textarea>
 
-            return true;
+            <button type="submit" id="publishBtn">
+                PUBLISH LESSON
+            </button>
+
+        </form>
+
+        <p id="publishMessage" class="status-message"
+           role="status"></p>
+
+    </section>
+
+
+    <!-- INVITE STUDENT -->
+    <section class="admin-card" id="inviteStudent">
+
+        <h2>INVITE NEW STUDENT</h2>
+
+        <form id="inviteForm">
+
+            <label for="studentName">
+                STUDENT FULL NAME
+            </label>
+
+            <input
+                type="text"
+                id="studentName"
+                placeholder="Enter student's full name"
+                required
+            >
+
+            <label for="studentEmail">
+                STUDENT GMAIL
+            </label>
+
+            <input
+                type="email"
+                id="studentEmail"
+                placeholder="Enter student's Gmail"
+                required
+            >
+
+            <button type="submit" id="inviteBtn">
+                INVITE STUDENT
+            </button>
+
+        </form>
+
+        <p id="inviteMessage" class="status-message"
+           role="status"></p>
+
+    </section>
+
+</main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+<script>
+
+    const publishForm = document.getElementById("publishForm");
+    const publishBtn = document.getElementById("publishBtn");
+    const publishMessage = document.getElementById("publishMessage");
+
+    const inviteForm = document.getElementById("inviteForm");
+    const inviteBtn = document.getElementById("inviteBtn");
+    const inviteMessage = document.getElementById("inviteMessage");
+
+    const subjectSelect = document.getElementById("lessonSubject");
+
+    let currentAdmin = null;
+
+
+    // CHECK ADMIN
+    async function checkAdmin() {
+
+        const { data: { user }, error } =
+            await supabaseClient.auth.getUser();
+
+        if (error || !user) {
+            window.location.href = "login.html";
+            return false;
         }
 
-        inviteForm.addEventListener("submit", async function(event) {
-            event.preventDefault();
+        const { data: profile, error: profileError } =
+            await supabaseClient
+                .from("profiles")
+                .select("role")
+                .eq("id", user.id)
+                .single();
 
-            const full_name =
-                document.getElementById("studentName").value.trim();
+        if (profileError || profile?.role !== "admin") {
 
-            const email =
-                document.getElementById("studentEmail").value.trim();
+            await supabaseClient.auth.signOut();
 
-            inviteBtn.disabled = true;
-            inviteBtn.textContent = "SENDING INVITATION...";
-            message.textContent = "";
+            window.location.href = "login.html";
 
-            try {
-                const { data, error } =
-                    await supabaseClient.functions.invoke(
-                        "invite-student",
-                        {
-                            body: { full_name, email }
-                        }
-                    );
+            return false;
+        }
 
-                if (error) throw error;
-                if (data?.error) throw new Error(data.error);
+        currentAdmin = user;
 
-                message.textContent =
-                    "Invitation sent successfully!";
+        return true;
+    }
 
-                message.style.color = "#00d9ff";
-                inviteForm.reset();
 
-            } catch (error) {
-                message.textContent =
-                    error.message || "Invitation failed.";
+    // LOAD SUBJECTS
+    async function loadSubjects() {
 
-                message.style.color = "#ff7777";
+        subjectSelect.innerHTML =
+            '<option value="">LOADING...</option>';
 
-            } finally {
-                inviteBtn.disabled = false;
-                inviteBtn.textContent = "INVITE STUDENT";
-            }
+        const { data, error } =
+            await supabaseClient
+                .from("subjects")
+                .select("id, name")
+                .order("name");
+
+        if (error) {
+
+            subjectSelect.innerHTML =
+                '<option value="">FAILED TO LOAD SUBJECTS</option>';
+
+            publishMessage.textContent = error.message;
+
+            return;
+        }
+
+        subjectSelect.innerHTML =
+            '<option value="">SELECT SUBJECT</option>';
+
+        data.forEach(function(subject) {
+
+            const option = document.createElement("option");
+
+            option.value = subject.id;
+            option.textContent = subject.name;
+
+            subjectSelect.appendChild(option);
+
         });
 
-        document.getElementById("logoutBtn")
-            .addEventListener("click", async function() {
-                await supabaseClient.auth.signOut();
-                window.location.href = "login.html";
-            });
+    }
 
-        checkAdmin();
-    </script>
+
+    // PUBLISH LESSON
+    publishForm.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        if (!currentAdmin) {
+            publishMessage.textContent =
+                "Admin authentication is required.";
+            return;
+        }
+
+        const subjectId = subjectSelect.value;
+
+        const category =
+            document.getElementById("lessonCategory")
+                .value.trim() || "General";
+
+        const title =
+            document.getElementById("lessonTitle")
+                .value.trim();
+
+        const content =
+            document.getElementById("lessonContent")
+                .value.trim();
+
+        const examples =
+            document.getElementById("lessonExamples")
+                .value.trim();
+
+        const exercises =
+            document.getElementById("lessonExercises")
+                .value.trim();
+
+        if (!subjectId || !title || !content) {
+
+            publishMessage.textContent =
+                "Please complete all required fields.";
+
+            return;
+        }
+
+        publishBtn.disabled = true;
+        publishBtn.textContent = "PUBLISHING...";
+
+        publishMessage.textContent = "";
+
+        try {
+
+            const { data, error } =
+                await supabaseClient
+                    .from("lessons")
+                    .insert({
+
+                        subject_id: subjectId,
+
+                        category: category,
+
+                        title: title,
+
+                        content: content,
+
+                        examples: examples,
+
+                        exercises: exercises,
+
+                        published: true,
+
+                        published_at: new Date().toISOString(),
+
+                        created_by: currentAdmin.id
+
+                    })
+                    .select();
+
+            if (error) throw error;
+
+            publishMessage.textContent =
+                "SUCCESS! LESSON PUBLISHED.";
+
+            publishMessage.style.color = "#00d9ff";
+
+            publishForm.reset();
+
+        } catch (error) {
+
+            publishMessage.textContent =
+                error.message || "Failed to publish lesson.";
+
+            publishMessage.style.color = "#ff7777";
+
+        } finally {
+
+            publishBtn.disabled = false;
+            publishBtn.textContent = "PUBLISH LESSON";
+
+        }
+
+    });
+
+
+    // INVITE STUDENT
+    inviteForm.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const full_name =
+            document.getElementById("studentName")
+                .value.trim();
+
+        const email =
+            document.getElementById("studentEmail")
+                .value.trim();
+
+        inviteBtn.disabled = true;
+
+        inviteBtn.textContent = "SENDING INVITATION...";
+
+        inviteMessage.textContent = "";
+
+        try {
+
+            const { data, error } =
+                await supabaseClient.functions.invoke(
+                    "invite-student",
+                    {
+                        body: { full_name, email }
+                    }
+                );
+
+            if (error) throw error;
+
+            if (data?.error) {
+                throw new Error(data.error);
+            }
+
+            inviteMessage.textContent =
+                "INVITATION SENT SUCCESSFULLY!";
+
+            inviteMessage.style.color = "#00d9ff";
+
+            inviteForm.reset();
+
+        } catch (error) {
+
+            inviteMessage.textContent =
+                error.message || "Invitation failed.";
+
+            inviteMessage.style.color = "#ff7777";
+
+        } finally {
+
+            inviteBtn.disabled = false;
+
+            inviteBtn.textContent = "INVITE STUDENT";
+
+        }
+
+    });
+
+
+    // LOG OUT
+    document.getElementById("logoutBtn")
+        .addEventListener("click", async function() {
+
+            await supabaseClient.auth.signOut();
+
+            window.location.href = "login.html";
+
+        });
+
+
+    // START ADMIN DASHBOARD
+    async function startAdminDashboard() {
+
+        const isAdmin = await checkAdmin();
+
+        if (!isAdmin) return;
+
+        await loadSubjects();
+
+    }
+
+    startAdminDashboard();
+
+</script>
 
 </body>
 </html>
