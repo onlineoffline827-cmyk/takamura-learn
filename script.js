@@ -83,6 +83,9 @@ const translations = {
         physicsTitle: "PHYSICS",
         physicsPageText: "Welcome to your Physics learning classroom.",
 
+        mathematicsTitle: "MATHEMATICS",
+        mathematicsPageText: "Welcome to your Mathematics learning classroom.",
+
         footer1: "© 2026 TAKAMURA LEARN",
         footer2: "Learn something new every day.",
         language: "🇸🇴 SOMALI"
@@ -171,6 +174,9 @@ const translations = {
         physicsTitle: "FIISIKIS",
         physicsPageText: "Ku soo dhowow fasalkaaga barashada Fiisigiska.",
 
+        mathematicsTitle: "XISAAB",
+        mathematicsPageText: "Ku soo dhowow fasalkaaga barashada Xisaabta.",
+
         footer1: "© 2026 TAKAMURA LEARN",
         footer2: "Maalin kasta wax cusub baro.",
         language: "🇬🇧 ENGLISH"
@@ -184,13 +190,31 @@ function changeLanguage() {
     const path = location.pathname;
     const links = document.querySelectorAll("nav a");
 
+    const updateNavigation = () => {
+        const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
+
+        links.forEach((link, i) => {
+            if (t[names[i]]) {
+                link.textContent = t[names[i]];
+            }
+        });
+    };
+
+    const updateSummaryCard = () => {
+        const cards = document.querySelectorAll(".dashboard-card");
+
+        cards.forEach(card => {
+            const title = card.querySelector("h3");
+            const description = card.querySelector("p");
+
+            if (title) title.textContent = t.lessonSummary;
+            if (description) description.textContent = t.lessonSummaryText;
+        });
+    };
+
     if (path.endsWith("dashboard.html")) {
         document.querySelector("header p").textContent = t.dashboard;
-
-        const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
-        links.forEach((link, i) => {
-            if (t[names[i]]) link.textContent = t[names[i]];
-        });
+        updateNavigation();
 
         document.querySelector(".hero h2").textContent = t.welcomeStudent;
         document.querySelector(".hero p").textContent = t.dashboardText;
@@ -200,17 +224,16 @@ function changeLanguage() {
         const descriptions = [t.lessonsText, t.pdfText, t.aiText, t.requestsText, t.profileText];
 
         cards.forEach((card, i) => {
-            if (titles[i]) card.querySelector("h3").textContent = titles[i];
-            if (descriptions[i]) card.querySelector("p").textContent = descriptions[i];
+            const title = card.querySelector("h3");
+            const description = card.querySelector("p");
+
+            if (title && titles[i]) title.textContent = titles[i];
+            if (description && descriptions[i]) description.textContent = descriptions[i];
         });
 
     } else if (path.endsWith("lessons.html")) {
         document.querySelector("header p").textContent = t.lessons;
-
-        const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
-        links.forEach((link, i) => {
-            if (t[names[i]]) link.textContent = t[names[i]];
-        });
+        updateNavigation();
 
         document.querySelector(".hero h2").textContent = t.lessonsTitle;
         document.querySelector(".hero p").textContent = t.lessonsPageText;
@@ -220,80 +243,56 @@ function changeLanguage() {
         const descriptions = [t.englishText, t.biologyText, t.physicsText, t.mathematicsText];
 
         cards.forEach((card, i) => {
-            if (titles[i]) card.querySelector("h3").textContent = titles[i];
-            if (descriptions[i]) card.querySelector("p").textContent = descriptions[i];
+            const title = card.querySelector("h3");
+            const description = card.querySelector("p");
+
+            if (title && titles[i]) title.textContent = titles[i];
+            if (description && descriptions[i]) description.textContent = descriptions[i];
         });
 
     } else if (path.endsWith("english.html")) {
         document.querySelector("header p").textContent = t.english;
-
-        const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
-        links.forEach((link, i) => {
-            if (t[names[i]]) link.textContent = t[names[i]];
-        });
+        updateNavigation();
 
         document.querySelector(".hero h2").textContent = t.englishTitle;
         document.querySelector(".hero p").textContent = t.englishPageText;
 
-        const cards = document.querySelectorAll(".dashboard-card");
-        const titles = [t.lessonSummary];
-        const descriptions = [t.lessonSummaryText];
-
-        cards.forEach((card, i) => {
-            if (titles[i]) card.querySelector("h3").textContent = titles[i];
-            if (descriptions[i]) card.querySelector("p").textContent = descriptions[i];
-        });
+        updateSummaryCard();
 
     } else if (path.endsWith("english-summary.html")) {
         document.querySelector("header p").textContent = t.english;
 
-        const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
-        links.forEach((link, i) => {
-            if (t[names[i]]) link.textContent = t[names[i]];
-        });
+        updateNavigation();
 
         document.querySelector(".hero h2").textContent = t.summaryTitle;
         document.querySelector(".hero p").textContent = t.summaryText;
 
     } else if (path.endsWith("biology.html")) {
         document.querySelector("header p").textContent = t.biology;
-
-        const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
-        links.forEach((link, i) => {
-            if (t[names[i]]) link.textContent = t[names[i]];
-        });
+        updateNavigation();
 
         document.querySelector(".hero h2").textContent = t.biologyTitle;
         document.querySelector(".hero p").textContent = t.biologyPageText;
 
-        const cards = document.querySelectorAll(".dashboard-card");
-        const titles = [t.lessonSummary];
-        const descriptions = [t.lessonSummaryText];
-
-        cards.forEach((card, i) => {
-            if (titles[i]) card.querySelector("h3").textContent = titles[i];
-            if (descriptions[i]) card.querySelector("p").textContent = descriptions[i];
-        });
+        updateSummaryCard();
 
     } else if (path.endsWith("physics.html")) {
         document.querySelector("header p").textContent = t.physics;
-
-        const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
-        links.forEach((link, i) => {
-            if (t[names[i]]) link.textContent = t[names[i]];
-        });
+        updateNavigation();
 
         document.querySelector(".hero h2").textContent = t.physicsTitle;
         document.querySelector(".hero p").textContent = t.physicsPageText;
 
-        const cards = document.querySelectorAll(".dashboard-card");
-        const titles = [t.lessonSummary];
-        const descriptions = [t.lessonSummaryText];
+        updateSummaryCard();
 
-        cards.forEach((card, i) => {
-            if (titles[i]) card.querySelector("h3").textContent = titles[i];
-            if (descriptions[i]) card.querySelector("p").textContent = descriptions[i];
-        });
+    } else if (path.endsWith("mathematics.html")) {
+        document.querySelector("header p").textContent = t.mathematics;
+        updateNavigation();
+
+        document.querySelector(".hero h2").textContent = t.mathematicsTitle;
+        document.querySelector(".hero p").textContent = t.mathematicsPageText;
+
+        updateSummaryCard();
 
     } else {
         document.querySelector("header p").textContent = t.slogan;
@@ -344,11 +343,15 @@ function changeLanguage() {
     }
 
     const footer = document.querySelectorAll("footer p");
+
     if (footer[0]) footer[0].textContent = t.footer1;
     if (footer[1]) footer[1].textContent = t.footer2;
 
     const languageButton = document.getElementById("languageBtn");
-    if (languageButton) languageButton.textContent = t.language;
+
+    if (languageButton) {
+        languageButton.textContent = t.language;
+    }
 }
 
 const languageButton = document.getElementById("languageBtn");
@@ -356,7 +359,9 @@ const languageButton = document.getElementById("languageBtn");
 if (languageButton) {
     languageButton.addEventListener("click", function() {
         currentLanguage = currentLanguage === "en" ? "so" : "en";
+
         localStorage.setItem("language", currentLanguage);
+
         changeLanguage();
     });
 }
