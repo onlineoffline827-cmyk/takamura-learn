@@ -53,6 +53,12 @@ const translations = {
         mathematicsText: "Improve your mathematics skills.",
         englishTitle: "ENGLISH LANGUAGE",
         englishPageText: "Welcome to your English learning classroom.",
+
+        lessonSummary: "LESSON SUMMARY",
+        lessonSummaryText: "Explore summarized English lessons.",
+        summaryTitle: "ENGLISH LESSON SUMMARY",
+        summaryText: "Explore your summarized English lessons.",
+
         grammar: "GRAMMAR",
         grammarText: "Learn English grammar.",
         vocabulary: "VOCABULARY",
@@ -129,6 +135,12 @@ const translations = {
         mathematicsText: "Kobci xirfadahaaga xisaabta.",
         englishTitle: "LUQADDA INGIRIISIGA",
         englishPageText: "Ku soo dhowow fasalkaaga barashada Ingiriisiga.",
+
+        lessonSummary: "SOO KOOBIDDA CASHARRADA",
+        lessonSummaryText: "Baadh casharrada Ingiriisiga oo la soo koobay.",
+        summaryTitle: "SOO KOOBIDDA CASHARRADA INGIRIISIGA",
+        summaryText: "Baadh casharradaada Ingiriisiga ee la soo koobay.",
+
         grammar: "NAHWAHA",
         grammarText: "Baro xeerarka naxwaha Ingiriisiga.",
         vocabulary: "ERAYADA",
@@ -211,14 +223,26 @@ function changeLanguage() {
         document.querySelector(".hero h2").textContent = t.englishTitle;
         document.querySelector(".hero p").textContent = t.englishPageText;
 
+        // ENGLISH PAGE: LESSON SUMMARY ONLY
         const cards = document.querySelectorAll(".dashboard-card");
-        const titles = [t.grammar, t.vocabulary, t.reading, t.exercises];
-        const descriptions = [t.grammarText, t.vocabularyText, t.readingText, t.exercisesText];
+        const titles = [t.lessonSummary];
+        const descriptions = [t.lessonSummaryText];
 
         cards.forEach((card, i) => {
             if (titles[i]) card.querySelector("h3").textContent = titles[i];
             if (descriptions[i]) card.querySelector("p").textContent = descriptions[i];
         });
+
+    } else if (path.endsWith("english-summary.html")) {
+        document.querySelector("header p").textContent = t.english;
+
+        const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
+        links.forEach((link, i) => {
+            if (t[names[i]]) link.textContent = t[names[i]];
+        });
+
+        document.querySelector(".hero h2").textContent = t.summaryTitle;
+        document.querySelector(".hero p").textContent = t.summaryText;
 
     } else if (path.endsWith("biology.html")) {
         document.querySelector("header p").textContent = t.biology;
@@ -320,7 +344,7 @@ async function handleLogin(email, password, requiredRole) {
     const button = form?.querySelector("button");
     const t = translations[currentLanguage];
 
-    if (!window.supabase || !window.supabaseClient && typeof supabaseClient === "undefined") {
+    if (!window.supabase || (!window.supabaseClient && typeof supabaseClient === "undefined")) {
         alert("Supabase connection is not ready. Please refresh the page.");
         return;
     }
