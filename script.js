@@ -51,6 +51,7 @@ const translations = {
         physicsText: "Understand physics concepts.",
         mathematics: "MATHEMATICS",
         mathematicsText: "Improve your mathematics skills.",
+
         englishTitle: "ENGLISH LANGUAGE",
         englishPageText: "Welcome to your English learning classroom.",
 
@@ -67,6 +68,7 @@ const translations = {
         readingText: "Improve your reading skills.",
         exercises: "EXERCISES",
         exercisesText: "Practice what you learn.",
+
         biologyTitle: "BIOLOGY",
         biologyPageText: "Welcome to your Biology learning classroom.",
         cellBiology: "CELL BIOLOGY",
@@ -77,6 +79,10 @@ const translations = {
         plantBiologyText: "Discover plants and how they grow.",
         biologyExercises: "EXERCISES",
         biologyExercisesText: "Practice what you have learned.",
+
+        physicsTitle: "PHYSICS",
+        physicsPageText: "Welcome to your Physics learning classroom.",
+
         footer1: "© 2026 TAKAMURA LEARN",
         footer2: "Learn something new every day.",
         language: "🇸🇴 SOMALI"
@@ -133,6 +139,7 @@ const translations = {
         physicsText: "Faham fikradaha fiisigiska.",
         mathematics: "XISAAB",
         mathematicsText: "Kobci xirfadahaaga xisaabta.",
+
         englishTitle: "LUQADDA INGIRIISIGA",
         englishPageText: "Ku soo dhowow fasalkaaga barashada Ingiriisiga.",
 
@@ -149,6 +156,7 @@ const translations = {
         readingText: "Kobci xirfadahaaga akhriska.",
         exercises: "LAYLISYADA",
         exercisesText: "Ku tababar wixii aad baratay.",
+
         biologyTitle: "CILMIGA NOLOSHA",
         biologyPageText: "Ku soo dhowow fasalkaaga barashada Biology-ga.",
         cellBiology: "BAYOLOJIGA UNUGYADA",
@@ -159,6 +167,10 @@ const translations = {
         plantBiologyText: "Baro dhirta iyo sida ay u korto.",
         biologyExercises: "LAYLISYO",
         biologyExercisesText: "Ku tababar wixii aad baratay.",
+
+        physicsTitle: "FIISIKIS",
+        physicsPageText: "Ku soo dhowow fasalkaaga barashada Fiisigiska.",
+
         footer1: "© 2026 TAKAMURA LEARN",
         footer2: "Maalin kasta wax cusub baro.",
         language: "🇬🇧 ENGLISH"
@@ -254,7 +266,26 @@ function changeLanguage() {
         document.querySelector(".hero h2").textContent = t.biologyTitle;
         document.querySelector(".hero p").textContent = t.biologyPageText;
 
-        // BIOLOGY PAGE: LESSON SUMMARY ONLY
+        const cards = document.querySelectorAll(".dashboard-card");
+        const titles = [t.lessonSummary];
+        const descriptions = [t.lessonSummaryText];
+
+        cards.forEach((card, i) => {
+            if (titles[i]) card.querySelector("h3").textContent = titles[i];
+            if (descriptions[i]) card.querySelector("p").textContent = descriptions[i];
+        });
+
+    } else if (path.endsWith("physics.html")) {
+        document.querySelector("header p").textContent = t.physics;
+
+        const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
+        links.forEach((link, i) => {
+            if (t[names[i]]) link.textContent = t[names[i]];
+        });
+
+        document.querySelector(".hero h2").textContent = t.physicsTitle;
+        document.querySelector(".hero p").textContent = t.physicsPageText;
+
         const cards = document.querySelectorAll(".dashboard-card");
         const titles = [t.lessonSummary];
         const descriptions = [t.lessonSummaryText];
