@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Biology Lesson Summary | Takamura Learn</title>
+
     <link rel="stylesheet" href="style.css">
 
     <style>
@@ -28,6 +30,12 @@
             color: #050914;
         }
 
+        .summary-container {
+            max-width: 1000px;
+            margin: 30px auto 70px;
+            padding: 20px;
+        }
+
         .empty-summary {
             max-width: 600px;
             margin: 35px auto 70px;
@@ -49,6 +57,7 @@
         }
     </style>
 </head>
+
 <body>
 
 <header>
@@ -77,12 +86,21 @@
     <p>Explore your summarized Biology lessons.</p>
 </section>
 
-<section class="empty-summary">
-    <h3>NO LESSONS AVAILABLE YET</h3>
-    <p>
-        Biology lesson summaries will appear here
-        when they are published by the administrator.
-    </p>
+<section class="summary-container">
+
+    <!-- Published Biology lessons will appear here -->
+    <div id="summaryList"></div>
+
+    <!-- Displayed when no lessons are available -->
+    <div class="empty-summary" id="summaryEmpty">
+        <h3>NO LESSONS AVAILABLE YET</h3>
+
+        <p>
+            Biology lesson summaries will appear here
+            when they are published by the administrator.
+        </p>
+    </div>
+
 </section>
 
 <footer>
