@@ -83,6 +83,11 @@
             box-sizing: border-box;
         }
 
+        .admin-card input[type="file"] {
+            border: 1px dashed #00d9ff;
+            padding: 16px;
+        }
+
         .admin-card textarea {
             min-height: 130px;
             resize: vertical;
@@ -109,10 +114,18 @@
         .status-message {
             margin-top: 15px;
             line-height: 1.6;
+            overflow-wrap: anywhere;
         }
 
         .section-description {
             color: #ccc;
+            line-height: 1.6;
+        }
+
+        .file-info {
+            color: #aaa;
+            font-size: 13px;
+            margin-top: 10px;
             line-height: 1.6;
         }
 
@@ -135,6 +148,8 @@
     <a href="#dashboard">DASHBOARD</a>
 
     <a href="#publishLesson">PUBLISH LESSON</a>
+
+    <a href="#uploadFile">UPLOAD PDF</a>
 
     <a href="#inviteStudent">INVITE STUDENT</a>
 
@@ -218,7 +233,68 @@
 
         </form>
 
-        <p id="publishMessage" class="status-message"
+        <p id="publishMessage"
+           class="status-message"
+           role="status"></p>
+
+    </section>
+
+
+    <!-- PDF / IMAGE UPLOAD -->
+    <section class="admin-card" id="uploadFile">
+
+        <h2>UPLOAD PDF / IMAGE</h2>
+
+        <p class="section-description">
+            Upload your original lesson documents or images.
+            The uploaded file will be stored securely for processing.
+        </p>
+
+        <form id="uploadForm">
+
+            <label for="uploadSubject">
+                SELECT SUBJECT
+            </label>
+
+            <select id="uploadSubject" required>
+                <option value="">LOADING SUBJECTS...</option>
+            </select>
+
+            <label for="uploadTitle">
+                DOCUMENT TITLE
+            </label>
+
+            <input
+                type="text"
+                id="uploadTitle"
+                placeholder="Example: Biology Chapter 1"
+                required
+            >
+
+            <label for="lessonFile">
+                SELECT PDF OR IMAGE
+            </label>
+
+            <input
+                type="file"
+                id="lessonFile"
+                accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp"
+                required
+            >
+
+            <p class="file-info">
+                Supported formats: PDF, JPG, PNG, WEBP.
+                Maximum file size: 20 MB.
+            </p>
+
+            <button type="submit" id="uploadBtn">
+                UPLOAD DOCUMENT
+            </button>
+
+        </form>
+
+        <p id="uploadMessage"
+           class="status-message"
            role="status"></p>
 
     </section>
@@ -259,7 +335,8 @@
 
         </form>
 
-        <p id="inviteMessage" class="status-message"
+        <p id="inviteMessage"
+           class="status-message"
            role="status"></p>
 
     </section>
@@ -276,11 +353,25 @@
     const publishBtn = document.getElementById("publishBtn");
     const publishMessage = document.getElementById("publishMessage");
 
+    const uploadForm = document.getElementById("uploadForm");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const uploadMessage = document.getElementById("uploadMessage");
+
     const inviteForm = document.getElementById("inviteForm");
     const inviteBtn = document.getElementById("inviteBtn");
     const inviteMessage = document.getElementById("inviteMessage");
 
     const subjectSelect = document.getElementById("lessonSubject");
+    const uploadSubject = document.getElementById("uploadSubject");
+
+    const MAX_FILE_SIZE = 20 * 1024 * 1024;
+
+    const ALLOWED_TYPES = [
+        "application/pdf",
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+    ];
 
     let currentAdmin = null;
 
@@ -324,6 +415,9 @@
         subjectSelect.innerHTML =
             '<option value="">LOADING...</option>';
 
+        uploadSubject.innerHTML =
+            '<option value="">LOADING...</option>';
+
         const { data, error } =
             await supabaseClient
                 .from("subjects")
@@ -335,6 +429,9 @@
             subjectSelect.innerHTML =
                 '<option value="">FAILED TO LOAD SUBJECTS</option>';
 
+            uploadSubject.innerHTML =
+                '<option value="">FAILED TO LOAD SUBJECTS</option>';
+
             publishMessage.textContent = error.message;
 
             return;
@@ -343,14 +440,24 @@
         subjectSelect.innerHTML =
             '<option value="">SELECT SUBJECT</option>';
 
+        uploadSubject.innerHTML =
+            '<option value="">SELECT SUBJECT</option>';
+
         data.forEach(function(subject) {
 
-            const option = document.createElement("option");
+            const option1 = document.createElement("option");
 
-            option.value = subject.id;
-            option.textContent = subject.name;
+            option1.value = subject.id;
+            option1.textContent = subject.name;
 
-            subjectSelect.appendChild(option);
+            subjectSelect.appendChild(option1);
+
+            const option2 = document.createElement("option");
+
+            option2.value = subject.id;
+            option2.textContent = subject.name;
+
+            uploadSubject.appendChild(option2);
 
         });
 
@@ -405,31 +512,22 @@
 
         try {
 
-            const { data, error } =
+            const { error } =
                 await supabaseClient
                     .from("lessons")
                     .insert({
 
                         subject_id: subjectId,
-
                         category: category,
-
                         title: title,
-
                         content: content,
-
                         examples: examples,
-
                         exercises: exercises,
-
                         published: true,
-
                         published_at: new Date().toISOString(),
-
                         created_by: currentAdmin.id
 
-                    })
-                    .select();
+                    });
 
             if (error) throw error;
 
@@ -457,6 +555,168 @@
     });
 
 
+    // UPLOAD PDF / IMAGE
+    uploadForm.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        if (!currentAdmin) {
+
+            uploadMessage.textContent =
+                "Admin authentication is required.";
+
+            uploadMessage.style.color = "#ff7777";
+
+            return;
+        }
+
+        const subjectId = uploadSubject.value;
+
+        const title =
+            document.getElementById("uploadTitle")
+                .value.trim();
+
+        const fileInput =
+            document.getElementById("lessonFile");
+
+        const file = fileInput.files[0];
+
+        if (!subjectId || !title || !file) {
+
+            uploadMessage.textContent =
+                "Please complete all required fields.";
+
+            uploadMessage.style.color = "#ff7777";
+
+            return;
+        }
+
+        if (!ALLOWED_TYPES.includes(file.type)) {
+
+            uploadMessage.textContent =
+                "Unsupported file type. Please select PDF, JPG, PNG or WEBP.";
+
+            uploadMessage.style.color = "#ff7777";
+
+            return;
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+
+            uploadMessage.textContent =
+                "File is too large. Maximum size is 20 MB.";
+
+            uploadMessage.style.color = "#ff7777";
+
+            return;
+        }
+
+        uploadBtn.disabled = true;
+        uploadBtn.textContent = "UPLOADING...";
+
+        uploadMessage.textContent =
+            "Please wait while your document is uploaded.";
+
+        uploadMessage.style.color = "#00d9ff";
+
+        let uploadedPath = null;
+
+        try {
+
+            // Create a safe unique file path
+            const safeFileName = file.name
+                .replace(/[^a-zA-Z0-9._-]/g, "_")
+                .slice(-100);
+
+            const filePath =
+                currentAdmin.id + "/" +
+                Date.now() + "-" +
+                safeFileName;
+
+            // Upload file to Supabase Storage
+            const { data: storageData, error: storageError } =
+                await supabaseClient
+                    .storage
+                    .from("lesson-files")
+                    .upload(filePath, file, {
+                        cacheControl: "3600",
+                        upsert: false,
+                        contentType: file.type
+                    });
+
+            if (storageError) throw storageError;
+
+            uploadedPath = storageData.path;
+
+            // Save document information
+            const { error: databaseError } =
+                await supabaseClient
+                    .from("lesson_uploads")
+                    .insert({
+
+                        subject_id: subjectId,
+
+                        title: title,
+
+                        file_path: uploadedPath,
+
+                        file_name: file.name,
+
+                        mime_type: file.type,
+
+                        file_size: file.size,
+
+                        status: "pending_ocr",
+
+                        created_by: currentAdmin.id
+
+                    });
+
+            if (databaseError) throw databaseError;
+
+            uploadMessage.textContent =
+                "SUCCESS! DOCUMENT UPLOADED AND SAVED.";
+
+            uploadMessage.style.color = "#00d9ff";
+
+            uploadForm.reset();
+
+        } catch (error) {
+
+            // Remove uploaded file if database save failed
+            if (uploadedPath) {
+
+                const { error: cleanupError } =
+                    await supabaseClient
+                        .storage
+                        .from("lesson-files")
+                        .remove([uploadedPath]);
+
+                if (cleanupError) {
+                    console.error(
+                        "File cleanup failed:",
+                        cleanupError.message
+                    );
+                }
+            }
+
+            console.error("Upload error:", error);
+
+            uploadMessage.textContent =
+                error.message || "Document upload failed.";
+
+            uploadMessage.style.color = "#ff7777";
+
+        } finally {
+
+            uploadBtn.disabled = false;
+            uploadBtn.textContent = "UPLOAD DOCUMENT";
+
+        }
+
+    });
+
+
     // INVITE STUDENT
     inviteForm.addEventListener("submit", async function(event) {
 
@@ -471,7 +731,6 @@
                 .value.trim();
 
         inviteBtn.disabled = true;
-
         inviteBtn.textContent = "SENDING INVITATION...";
 
         inviteMessage.textContent = "";
@@ -509,7 +768,6 @@
         } finally {
 
             inviteBtn.disabled = false;
-
             inviteBtn.textContent = "INVITE STUDENT";
 
         }
