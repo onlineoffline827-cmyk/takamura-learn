@@ -1,0 +1,308 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Lesson Paper | Takamura Learn</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            background: #080f20;
+        }
+
+        .paper-actions {
+            max-width: 850px;
+            margin: 25px auto 15px;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .paper-btn {
+            padding: 10px 16px;
+            border: 1px solid #00d9ff;
+            border-radius: 7px;
+            color: #00d9ff;
+            background: transparent;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .paper-btn:hover {
+            background: #00d9ff;
+            color: #080f20;
+        }
+
+        .paper {
+            max-width: 850px;
+            min-height: 900px;
+            margin: 20px auto 60px;
+            padding: 55px 60px;
+            background: #fff;
+            color: #222;
+            border-radius: 4px;
+            box-shadow: 0 5px 30px #0005;
+        }
+
+        .paper-header {
+            text-align: center;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #00a9c7;
+            margin-bottom: 30px;
+        }
+
+        .paper-header h1 {
+            color: #087d99;
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        .paper-header p {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .paper-subject {
+            display: inline-block;
+            margin-bottom: 12px;
+            padding: 6px 14px;
+            background: #e5f8fc;
+            color: #087d99;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .paper-title {
+            font-size: 25px;
+            color: #172b40;
+            margin: 15px 0;
+            line-height: 1.4;
+        }
+
+        .paper-category {
+            color: #777;
+            font-size: 13px;
+        }
+
+        .paper-section {
+            margin: 30px 0;
+        }
+
+        .paper-section h2 {
+            color: #087d99;
+            font-size: 18px;
+            padding-bottom: 9px;
+            border-bottom: 1px solid #dce5e9;
+            margin-bottom: 15px;
+        }
+
+        .paper-section p {
+            color: #303840;
+            font-size: 15px;
+            line-height: 1.9;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .paper-footer {
+            margin-top: 60px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .paper-status {
+            max-width: 850px;
+            margin: 30px auto;
+            padding: 20px;
+            text-align: center;
+            color: #00d9ff;
+        }
+
+        @media (max-width: 600px) {
+            .paper {
+                margin: 12px;
+                padding: 30px 22px;
+                min-height: 700px;
+            }
+
+            .paper-title {
+                font-size: 21px;
+            }
+
+            .paper-section p {
+                font-size: 14px;
+            }
+        }
+
+        @media print {
+            body {
+                background: white !important;
+            }
+
+            header,
+            footer,
+            .paper-actions,
+            .paper-status {
+                display: none !important;
+            }
+
+            .paper {
+                max-width: none;
+                min-height: 0;
+                margin: 0;
+                padding: 20px;
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            @page {
+                margin: 18mm;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>TAKAMURA LEARN</h1>
+    <p>LEARN • UNDERSTAND • SUCCEED</p>
+</header>
+
+<div class="paper-actions">
+    <a href="dashboard.html" class="paper-btn">← DASHBOARD</a>
+    <button class="paper-btn" onclick="window.print()">
+        PRINT / SAVE PDF
+    </button>
+</div>
+
+<p id="paperStatus" class="paper-status">
+    Loading lesson...
+</p>
+
+<main class="paper" id="lessonPaper" hidden>
+
+    <div class="paper-header">
+        <h1>TAKAMURA LEARN</h1>
+        <p>LEARN • UNDERSTAND • SUCCEED</p>
+    </div>
+
+    <div id="paperSubject" class="paper-subject"></div>
+
+    <h1 id="paperTitle" class="paper-title"></h1>
+
+    <p id="paperCategory" class="paper-category"></p>
+
+    <section class="paper-section">
+        <h2>LESSON CONTENT</h2>
+        <p id="paperContent"></p>
+    </section>
+
+    <section class="paper-section" id="examplesSection" hidden>
+        <h2>EXAMPLES</h2>
+        <p id="paperExamples"></p>
+    </section>
+
+    <section class="paper-section" id="exercisesSection" hidden>
+        <h2>EXERCISES</h2>
+        <p id="paperExercises"></p>
+    </section>
+
+    <div class="paper-footer">
+        TAKAMURA LEARN — LEARN SOMETHING NEW EVERY DAY.
+    </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", loadLessonPaper);
+
+async function loadLessonPaper() {
+    const status = document.getElementById("paperStatus");
+    const paper = document.getElementById("lessonPaper");
+
+    const params = new URLSearchParams(window.location.search);
+    const lessonId = params.get("id");
+
+    if (!lessonId) {
+        status.textContent = "Lesson ID is missing.";
+        return;
+    }
+
+    try {
+        const { data, error } = await supabaseClient
+            .from("lessons")
+            .select(`
+                id,
+                title,
+                category,
+                content,
+                examples,
+                exercises,
+                published,
+                subjects(name)
+            `)
+            .eq("id", lessonId)
+            .eq("published", true)
+            .single();
+
+        if (error) throw error;
+
+        if (!data) {
+            status.textContent = "Lesson not found.";
+            return;
+        }
+
+        document.getElementById("paperSubject").textContent =
+            data.subjects?.name || "LESSON";
+
+        document.getElementById("paperTitle").textContent =
+            data.title || "Untitled Lesson";
+
+        document.getElementById("paperCategory").textContent =
+            "Category: " + (data.category || "General");
+
+        document.getElementById("paperContent").textContent =
+            data.content || "No lesson content available.";
+
+        if (data.examples && data.examples.trim()) {
+            document.getElementById("paperExamples").textContent =
+                data.examples;
+            document.getElementById("examplesSection").hidden = false;
+        }
+
+        if (data.exercises && data.exercises.trim()) {
+            document.getElementById("paperExercises").textContent =
+                data.exercises;
+            document.getElementById("exercisesSection").hidden = false;
+        }
+
+        document.title =
+            (data.title || "Lesson") + " | Takamura Learn";
+
+        status.hidden = true;
+        paper.hidden = false;
+
+    } catch (error) {
+        console.error("Lesson paper error:", error);
+        status.textContent =
+            "Unable to open this lesson. Please try again.";
+    }
+}
+</script>
+
+</body>
+</html>
