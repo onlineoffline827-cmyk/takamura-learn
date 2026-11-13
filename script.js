@@ -232,40 +232,65 @@ let currentLanguage = localStorage.getItem("language") || "en";
 
 
 function changeLanguage() {
+
     const t = translations[currentLanguage];
     const path = location.pathname;
     const links = document.querySelectorAll("nav a");
 
     const updateNavigation = () => {
+
         const names = ["home", "lessons", "pdf", "ai", "requests", "profile"];
 
         links.forEach((link, i) => {
+
             if (t[names[i]]) {
                 link.textContent = t[names[i]];
             }
+
         });
     };
 
 
     const updateSummaryCard = () => {
+
         const cards = document.querySelectorAll(".dashboard-card");
 
         cards.forEach(card => {
+
             const title = card.querySelector("h3");
             const description = card.querySelector("p");
 
             if (title) title.textContent = t.lessonSummary;
             if (description) description.textContent = t.lessonSummaryText;
+
         });
     };
 
 
+    // =================================
     // STUDENT DASHBOARD
+    // =================================
+
     if (path.endsWith("dashboard.html")) {
 
         document.querySelector("header p").textContent = t.dashboard;
 
-        updateNavigation();
+        // Correct student navigation without PDF Library
+        const studentNavNames = [
+            "home",
+            "lessons",
+            "ai",
+            "requests",
+            "profile"
+        ];
+
+        links.forEach((link, i) => {
+
+            if (studentNavNames[i]) {
+                link.textContent = t[studentNavNames[i]];
+            }
+
+        });
 
         document.querySelector(".hero h2").textContent = t.welcomeStudent;
         document.querySelector(".hero p").textContent = t.dashboardText;
@@ -274,7 +299,6 @@ function changeLanguage() {
 
         const titles = [
             t.lessons,
-            t.pdf,
             t.ai,
             t.requests,
             t.profile
@@ -282,22 +306,31 @@ function changeLanguage() {
 
         const descriptions = [
             t.lessonsText,
-            t.pdfText,
             t.aiText,
             t.requestsText,
             t.profileText
         ];
 
         cards.forEach((card, i) => {
+
             const title = card.querySelector("h3");
             const description = card.querySelector("p");
 
-            if (title && titles[i]) title.textContent = titles[i];
-            if (description && descriptions[i]) description.textContent = descriptions[i];
+            if (title && titles[i]) {
+                title.textContent = titles[i];
+            }
+
+            if (description && descriptions[i]) {
+                description.textContent = descriptions[i];
+            }
+
         });
 
 
+    // =================================
     // LESSONS PAGE
+    // =================================
+
     } else if (path.endsWith("lessons.html")) {
 
         document.querySelector("header p").textContent = t.lessons;
@@ -324,15 +357,20 @@ function changeLanguage() {
         ];
 
         cards.forEach((card, i) => {
+
             const title = card.querySelector("h3");
             const description = card.querySelector("p");
 
             if (title && titles[i]) title.textContent = titles[i];
             if (description && descriptions[i]) description.textContent = descriptions[i];
+
         });
 
 
+    // =================================
     // ENGLISH SUBJECT PAGE
+    // =================================
+
     } else if (path.endsWith("english.html")) {
 
         document.querySelector("header p").textContent = t.english;
@@ -345,7 +383,10 @@ function changeLanguage() {
         updateSummaryCard();
 
 
+    // =================================
     // FOUR SUMMARY PAGES
+    // =================================
+
     } else if (
         path.endsWith("english-summary.html") ||
         path.endsWith("biology-summary.html") ||
@@ -392,7 +433,10 @@ function changeLanguage() {
         }
 
 
+    // =================================
     // BIOLOGY SUBJECT PAGE
+    // =================================
+
     } else if (path.endsWith("biology.html")) {
 
         document.querySelector("header p").textContent = t.biology;
@@ -405,7 +449,10 @@ function changeLanguage() {
         updateSummaryCard();
 
 
+    // =================================
     // PHYSICS SUBJECT PAGE
+    // =================================
+
     } else if (path.endsWith("physics.html")) {
 
         document.querySelector("header p").textContent = t.physics;
@@ -418,7 +465,10 @@ function changeLanguage() {
         updateSummaryCard();
 
 
+    // =================================
     // MATHEMATICS SUBJECT PAGE
+    // =================================
+
     } else if (path.endsWith("mathematics.html")) {
 
         document.querySelector("header p").textContent = t.mathematics;
@@ -428,10 +478,11 @@ function changeLanguage() {
         document.querySelector(".hero h2").textContent = t.mathematicsTitle;
         document.querySelector(".hero p").textContent = t.mathematicsPageText;
 
-        updateSummaryCard();
 
-
+    // =================================
     // HOME, ABOUT AND LOGIN PAGES
+    // =================================
+
     } else {
 
         document.querySelector("header p").textContent = t.slogan;
@@ -460,6 +511,7 @@ function changeLanguage() {
             const boxes = document.querySelectorAll(".login-box");
 
             if (boxes[0]) {
+
                 boxes[0].querySelector("h2").textContent = t.studentLogin;
                 boxes[0].querySelector("p").textContent = t.studentDescription;
 
@@ -473,6 +525,7 @@ function changeLanguage() {
             }
 
             if (boxes[1]) {
+
                 boxes[1].querySelector("h2").textContent = t.adminLogin;
                 boxes[1].querySelector("p").textContent = t.adminDescription;
 
@@ -500,19 +553,26 @@ function changeLanguage() {
     }
 
 
+    // =================================
     // FOOTER TRANSLATION
+    // =================================
+
     const footer = document.querySelectorAll("footer p");
 
     if (footer[0]) footer[0].textContent = t.footer1;
     if (footer[1]) footer[1].textContent = t.footer2;
 
 
+    // =================================
     // LANGUAGE BUTTON
+    // =================================
+
     const languageButton = document.getElementById("languageBtn");
 
     if (languageButton) {
         languageButton.textContent = t.language;
     }
+
 }
 
 
@@ -524,7 +584,6 @@ const languageButton = document.getElementById("languageBtn");
 
 if (languageButton) {
 
-    // Avoid duplicate switching from inline HTML handlers
     languageButton.removeAttribute("onclick");
 
     languageButton.addEventListener("click", function() {
@@ -534,6 +593,7 @@ if (languageButton) {
         localStorage.setItem("language", currentLanguage);
 
         changeLanguage();
+
     });
 }
 
@@ -556,7 +616,10 @@ async function handleLogin(email, password, requiredRole) {
 
     const t = translations[currentLanguage];
 
-    if (!window.supabase || (!window.supabaseClient && typeof supabaseClient === "undefined")) {
+    if (
+        !window.supabase ||
+        (!window.supabaseClient && typeof supabaseClient === "undefined")
+    ) {
         alert("Supabase connection is not ready. Please refresh the page.");
         return;
     }
@@ -611,11 +674,15 @@ async function handleLogin(email, password, requiredRole) {
         button.textContent = requiredRole === "admin"
             ? t.adminLogin
             : t.studentLogin;
+
     }
 }
 
 
+// =================================
 // STUDENT LOGIN
+// =================================
+
 document.getElementById("studentLoginForm")
     ?.addEventListener("submit", function(event) {
 
@@ -626,10 +693,14 @@ document.getElementById("studentLoginForm")
             document.getElementById("studentPassword").value,
             "student"
         );
+
     });
 
 
+// =================================
 // ADMIN LOGIN
+// =================================
+
 document.getElementById("adminLoginForm")
     ?.addEventListener("submit", function(event) {
 
@@ -640,4 +711,5 @@ document.getElementById("adminLoginForm")
             document.getElementById("adminPassword").value,
             "admin"
         );
+
     });
