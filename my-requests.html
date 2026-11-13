@@ -1,0 +1,702 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MY REQUESTS | TAKAMURA LEARN</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #080f20;
+            color: #fff;
+        }
+
+        .requests-container {
+            max-width: 850px;
+            margin: 25px auto;
+            padding: 15px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 10px 16px;
+            color: #00d9ff;
+            border: 1px solid #00d9ff;
+            border-radius: 7px;
+            text-decoration: none;
+        }
+
+        .page-heading {
+            text-align: center;
+            padding: 30px 10px;
+        }
+
+        .page-heading h2 {
+            color: #00d9ff;
+            margin-bottom: 10px;
+        }
+
+        .page-heading p {
+            color: #aebdd0;
+            line-height: 1.6;
+        }
+
+        .request-form,
+        .request-card {
+            background: #101b30;
+            border: 1px solid #243a57;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 22px;
+        }
+
+        .request-form h3,
+        .requests-list h3 {
+            color: #00d9ff;
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #dce8f5;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #34506f;
+            border-radius: 8px;
+            outline: none;
+            background: #0b1528;
+            color: white;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 130px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #00d9ff;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #00bfe5;
+            color: #06111d;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .form-status {
+            margin-top: 14px;
+            text-align: center;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .success {
+            color: #39d98a;
+        }
+
+        .error {
+            color: #ff7777;
+        }
+
+        .request-card {
+            border-left: 3px solid #00d9ff;
+        }
+
+        .request-card h4 {
+            color: #fff;
+            margin-bottom: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .request-message {
+            color: #c4d1e0;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            margin: 12px 0;
+        }
+
+        .request-meta {
+            color: #8fa3bb;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .request-status {
+            display: inline-block;
+            padding: 6px 11px;
+            border: 1px solid #e6b94a;
+            border-radius: 20px;
+            color: #e6b94a;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .request-status.answered {
+            border-color: #39d98a;
+            color: #39d98a;
+        }
+
+        .admin-reply {
+            margin-top: 17px;
+            padding: 14px;
+            background: #0b2b32;
+            border: 1px solid #167b83;
+            border-radius: 8px;
+        }
+
+        .admin-reply strong {
+            display: block;
+            color: #39d9d0;
+            margin-bottom: 8px;
+        }
+
+        .admin-reply p {
+            color: #d8eeee;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .empty-state,
+        .loading-state {
+            text-align: center;
+            padding: 25px 12px;
+            color: #9aacc2;
+            line-height: 1.6;
+        }
+
+        .language-btn {
+            display: block;
+            margin: 12px auto;
+            padding: 9px 16px;
+            background: transparent;
+            color: #00d9ff;
+            border: 1px solid #00d9ff;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        @media(max-width: 500px) {
+            .requests-container {
+                padding: 10px;
+            }
+
+            .request-form,
+            .request-card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>TAKAMURA LEARN</h1>
+    <p id="headerSubtitle">MY REQUESTS</p>
+
+    <button class="language-btn" id="languageBtn">
+        🇸🇴 SOMALI
+    </button>
+</header>
+
+<main class="requests-container">
+
+    <a href="dashboard.html" class="back-btn" id="backBtn">
+        ← BACK TO DASHBOARD
+    </a>
+
+    <section class="page-heading">
+        <h2 id="pageTitle">MY REQUESTS</h2>
+        <p id="pageDescription">
+            Send a request to the administrator and check their replies.
+        </p>
+    </section>
+
+    <section class="request-form">
+
+        <h3 id="formTitle">SEND A NEW REQUEST</h3>
+
+        <form id="requestForm">
+
+            <div class="form-group">
+                <label for="subject" id="subjectLabel">
+                    Request Subject
+                </label>
+
+                <select id="subject" required>
+                    <option value="">Select a subject</option>
+                    <option value="Lesson Request">Lesson Request</option>
+                    <option value="Technical Support">Technical Support</option>
+                    <option value="Account Problem">Account Problem</option>
+                    <option value="General Question">General Question</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="message" id="messageLabel">
+                    Your Message
+                </label>
+
+                <textarea
+                    id="message"
+                    maxlength="2000"
+                    placeholder="Write your request here..."
+                    required
+                ></textarea>
+            </div>
+
+            <button
+                type="submit"
+                class="submit-btn"
+                id="submitBtn"
+            >
+                SEND REQUEST
+            </button>
+
+            <p
+                class="form-status"
+                id="formStatus"
+                aria-live="polite"
+            ></p>
+
+        </form>
+
+    </section>
+
+    <section class="requests-list">
+
+        <h3 id="historyTitle">MY PREVIOUS REQUESTS</h3>
+
+        <div id="requestsList" class="loading-state">
+            Loading your requests...
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 TAKAMURA LEARN</p>
+    <p id="footerText">Learn something new every day.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", async function() {
+
+    const requestForm = document.getElementById("requestForm");
+    const subjectInput = document.getElementById("subject");
+    const messageInput = document.getElementById("message");
+    const submitBtn = document.getElementById("submitBtn");
+    const formStatus = document.getElementById("formStatus");
+    const requestsList = document.getElementById("requestsList");
+    const languageBtn = document.getElementById("languageBtn");
+
+    let currentUser = null;
+    let language = localStorage.getItem("takamuraLanguage") || "en";
+
+    const translations = {
+        en: {
+            header: "MY REQUESTS",
+            back: "← BACK TO DASHBOARD",
+            title: "MY REQUESTS",
+            description: "Send a request to the administrator and check their replies.",
+            formTitle: "SEND A NEW REQUEST",
+            subject: "Request Subject",
+            selectSubject: "Select a subject",
+            lesson: "Lesson Request",
+            technical: "Technical Support",
+            account: "Account Problem",
+            general: "General Question",
+            other: "Other",
+            message: "Your Message",
+            placeholder: "Write your request here...",
+            send: "SEND REQUEST",
+            sending: "SENDING...",
+            history: "MY PREVIOUS REQUESTS",
+            loading: "Loading your requests...",
+            empty: "You have not sent any requests yet.",
+            sent: "Your request was sent successfully.",
+            failed: "Unable to send your request. Please try again.",
+            subjectRequired: "Please select a subject.",
+            messageRequired: "Please write your message.",
+            reply: "ADMIN REPLY",
+            open: "OPEN",
+            answered: "ANSWERED",
+            pending: "WAITING FOR REPLY",
+            footer: "Learn something new every day.",
+            loadError: "Unable to load your requests.",
+            date: "Submitted:",
+            status: "Status:"
+        },
+
+        so: {
+            header: "CODSIYADAYDA",
+            back: "← KU NOQO DASHBOARD-KA",
+            title: "CODSIYADAYDA",
+            description: "Codsi u dir maamulka, kadibna eeg jawaabahooda.",
+            formTitle: "DIR CODSI CUSUB",
+            subject: "Cinwaanka Codsiga",
+            selectSubject: "Dooro nooca codsiga",
+            lesson: "Codsi Cashar",
+            technical: "Caawimaad Farsamo",
+            account: "Dhibaato Account",
+            general: "Su'aal Guud",
+            other: "Kale",
+            message: "Fariintaada",
+            placeholder: "Halkan ku qor codsigaaga...",
+            send: "DIR CODSIGA",
+            sending: "WAA LA DIRAYAA...",
+            history: "CODSIYADAYDII HORE",
+            loading: "Codsiyadaada waa la soo rarayaa...",
+            empty: "Weli wax codsi ah ma aadan dirin.",
+            sent: "Codsigaaga si guul leh ayaa loo diray.",
+            failed: "Codsiga lama diri karin. Mar kale isku day.",
+            subjectRequired: "Fadlan dooro nooca codsiga.",
+            messageRequired: "Fadlan qor fariintaada.",
+            reply: "JAWAABTA MAAMULKA",
+            open: "FURAN",
+            answered: "LOO JAWAABAY",
+            pending: "JAWAAB AYAA LA SUGAYAA",
+            footer: "Maalin kasta wax cusub baro.",
+            loadError: "Codsiyada lama soo rari karin.",
+            date: "La diray:",
+            status: "Xaaladda:"
+        }
+    };
+
+    function t(key) {
+        return translations[language][key] || key;
+    }
+
+    function updateLanguage() {
+
+        document.documentElement.lang = language;
+
+        document.getElementById("headerSubtitle").textContent = t("header");
+        document.getElementById("backBtn").textContent = t("back");
+        document.getElementById("pageTitle").textContent = t("title");
+        document.getElementById("pageDescription").textContent = t("description");
+        document.getElementById("formTitle").textContent = t("formTitle");
+        document.getElementById("subjectLabel").textContent = t("subject");
+        document.getElementById("messageLabel").textContent = t("message");
+        document.getElementById("historyTitle").textContent = t("history");
+        document.getElementById("footerText").textContent = t("footer");
+
+        messageInput.placeholder = t("placeholder");
+
+        submitBtn.textContent = t("send");
+
+        languageBtn.textContent =
+            language === "en" ? "🇸🇴 SOMALI" : "🇬🇧 ENGLISH";
+
+        const options = [
+            ["", "selectSubject"],
+            ["Lesson Request", "lesson"],
+            ["Technical Support", "technical"],
+            ["Account Problem", "account"],
+            ["General Question", "general"],
+            ["Other", "other"]
+        ];
+
+        subjectInput.innerHTML = "";
+
+        options.forEach(function(item) {
+            const option = document.createElement("option");
+            option.value = item[0];
+            option.textContent = t(item[1]);
+            subjectInput.appendChild(option);
+        });
+
+        if (requestsList.dataset.loaded === "true") {
+            loadRequests();
+        }
+    }
+
+    languageBtn.addEventListener("click", function() {
+        language = language === "en" ? "so" : "en";
+        localStorage.setItem("takamuraLanguage", language);
+        updateLanguage();
+    });
+
+    function showFormStatus(message, type) {
+        formStatus.textContent = message;
+        formStatus.className = "form-status " + type;
+    }
+
+    function formatDate(dateValue) {
+        const date = new Date(dateValue);
+
+        if (Number.isNaN(date.getTime())) {
+            return "";
+        }
+
+        return date.toLocaleString(
+            language === "so" ? "so-SO" : "en-US",
+            {
+                dateStyle: "medium",
+                timeStyle: "short"
+            }
+        );
+    }
+
+    function createTextElement(tag, className, value) {
+        const element = document.createElement(tag);
+
+        if (className) {
+            element.className = className;
+        }
+
+        element.textContent = value || "";
+
+        return element;
+    }
+
+    function renderRequest(request) {
+
+        const card = document.createElement("article");
+        card.className = "request-card";
+
+        card.appendChild(
+            createTextElement("h4", "", request.subject)
+        );
+
+        card.appendChild(
+            createTextElement(
+                "p",
+                "request-meta",
+                t("date") + " " + formatDate(request.created_at)
+            )
+        );
+
+        card.appendChild(
+            createTextElement("p", "request-message", request.message)
+        );
+
+        const hasReply =
+            typeof request.reply === "string" &&
+            request.reply.trim().length > 0;
+
+        const status = document.createElement("span");
+
+        status.className =
+            "request-status" + (hasReply ? " answered" : "");
+
+        let statusText;
+
+        if (hasReply) {
+            statusText = t("answered");
+        } else if (request.status === "open") {
+            statusText = t("open");
+        } else {
+            statusText = String(request.status || t("pending")).toUpperCase();
+        }
+
+        status.textContent = t("status") + " " + statusText;
+
+        card.appendChild(status);
+
+        if (hasReply) {
+
+            const replyBox = document.createElement("div");
+            replyBox.className = "admin-reply";
+
+            replyBox.appendChild(
+                createTextElement("strong", "", t("reply"))
+            );
+
+            replyBox.appendChild(
+                createTextElement("p", "", request.reply)
+            );
+
+            card.appendChild(replyBox);
+        }
+
+        return card;
+    }
+
+    async function loadRequests() {
+
+        requestsList.textContent = t("loading");
+        requestsList.className = "loading-state";
+
+        try {
+
+            const { data, error } = await supabaseClient
+                .from("requests")
+                .select("id, subject, message, status, created_at, reply")
+                .eq("student_id", currentUser.id)
+                .order("created_at", { ascending: false });
+
+            if (error) throw error;
+
+            requestsList.innerHTML = "";
+
+            if (!data || data.length === 0) {
+
+                requestsList.className = "empty-state";
+                requestsList.textContent = t("empty");
+                requestsList.dataset.loaded = "true";
+
+                return;
+            }
+
+            data.forEach(function(request) {
+                requestsList.appendChild(renderRequest(request));
+            });
+
+            requestsList.className = "";
+            requestsList.dataset.loaded = "true";
+
+        } catch (error) {
+
+            console.error("Load requests error:", error);
+
+            requestsList.className = "error";
+            requestsList.textContent = t("loadError");
+        }
+    }
+
+    requestForm.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const subject = subjectInput.value;
+        const message = messageInput.value.trim();
+
+        if (!subject) {
+            showFormStatus(t("subjectRequired"), "error");
+            return;
+        }
+
+        if (!message) {
+            showFormStatus(t("messageRequired"), "error");
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = t("sending");
+
+        showFormStatus("", "");
+
+        try {
+
+            const { error } = await supabaseClient
+                .from("requests")
+                .insert({
+                    student_id: currentUser.id,
+                    subject: subject,
+                    message: message
+                });
+
+            if (error) throw error;
+
+            requestForm.reset();
+
+            showFormStatus(t("sent"), "success");
+
+            await loadRequests();
+
+        } catch (error) {
+
+            console.error("Send request error:", error);
+
+            showFormStatus(t("failed"), "error");
+
+        } finally {
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = t("send");
+        }
+    });
+
+    // Check authentication and student role
+    try {
+
+        const { data: sessionData, error: sessionError } =
+            await supabaseClient.auth.getSession();
+
+        if (sessionError) throw sessionError;
+
+        if (!sessionData.session) {
+            window.location.replace("login.html");
+            return;
+        }
+
+        currentUser = sessionData.session.user;
+
+        const { data: profile, error: profileError } =
+            await supabaseClient
+                .from("profiles")
+                .select("role")
+                .eq("id", currentUser.id)
+                .maybeSingle();
+
+        if (profileError) throw profileError;
+
+        if (!profile || profile.role !== "student") {
+            window.location.replace(
+                profile && profile.role === "admin"
+                    ? "admin-dashboard.html"
+                    : "login.html"
+            );
+            return;
+        }
+
+        updateLanguage();
+        await loadRequests();
+
+    } catch (error) {
+
+        console.error("Requests access error:", error);
+
+        requestsList.className = "error";
+        requestsList.textContent =
+            "Unable to verify your account. Please try again.";
+    }
+
+});
+</script>
+
+</body>
+</html>
