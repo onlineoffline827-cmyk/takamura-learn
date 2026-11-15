@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY PROFILE - TAKAMURA LEARN</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #172033;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 35px auto;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-size: 25px;
+            margin: 0;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 11px 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .back {
+            background: #e1e8f5;
+            color: #172033;
+        }
+
+        .profile-card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        .avatar {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: #243b70;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+
+        .name {
+            text-align: center;
+            font-size: 23px;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .role {
+            text-align: center;
+            color: #26734d;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .info {
+            padding: 15px;
+            background: #f6f8fc;
+            border-radius: 9px;
+            margin-bottom: 13px;
+        }
+
+        .info small {
+            display: block;
+            color: #68758b;
+            margin-bottom: 7px;
+        }
+
+        .info strong {
+            overflow-wrap: anywhere;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 20px;
+            color: #526078;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 14px;
+            }
+
+            .profile-card {
+                padding: 22px 16px;
+            }
+
+            h1 {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="top">
+        <h1 id="pageTitle">MY PROFILE</h1>
+        <button class="back" onclick="location.href='dashboard.html'">
+            ← Dashboard
+        </button>
+    </div>
+
+    <div class="profile-card">
+
+        <div class="avatar" id="avatar">?</div>
+
+        <div class="name" id="fullName">Loading...</div>
+        <div class="role" id="role">STUDENT</div>
+
+        <div class="info">
+            <small id="nameLabel">Full Name</small>
+            <strong id="nameValue">Loading...</strong>
+        </div>
+
+        <div class="info">
+            <small id="emailLabel">Email Address</small>
+            <strong id="emailValue">Loading...</strong>
+        </div>
+
+        <div class="info">
+            <small id="roleLabel">Account Role</small>
+            <strong id="roleValue">Loading...</strong>
+        </div>
+
+        <div class="info">
+            <small id="dateLabel">Account Created</small>
+            <strong id="dateValue">Loading...</strong>
+        </div>
+
+        <p id="message">Loading your profile...</p>
+
+    </div>
+</div>
+
+<script>
+    const translations = {
+        en: {
+            title: "MY PROFILE",
+            back: "← Dashboard",
+            name: "Full Name",
+            email: "Email Address",
+            role: "Account Role",
+            date: "Account Created",
+            student: "STUDENT",
+            loading: "Loading your profile...",
+            error: "Unable to load your profile. Please try again.",
+            missing: "Your profile information was not found.",
+            login: "Please login first."
+        },
+        so: {
+            title: "XOGTAYDA",
+            back: "← Bogga Hore",
+            name: "Magaca oo Buuxa",
+            email: "Email-ka",
+            role: "Doorka Akoonka",
+            date: "Taariikhda Akoonka",
+            student: "ARDAY",
+            loading: "Xogtaada ayaa la soo gelinayaa...",
+            error: "Xogta lama soo gelin. Fadlan mar kale isku day.",
+            missing: "Xogta profile-kaaga lama helin.",
+            login: "Fadlan marka hore gal akoonkaaga."
+        }
+    };
+
+    let currentLanguage =
+        localStorage.getItem("takamuraLanguage") || "en";
+
+    function updateLanguage() {
+        const t = translations[currentLanguage] || translations.en;
+
+        document.getElementById("pageTitle").textContent = t.title;
+        document.querySelector(".back").textContent = t.back;
+        document.getElementById("nameLabel").textContent = t.name;
+        document.getElementById("emailLabel").textContent = t.email;
+        document.getElementById("roleLabel").textContent = t.role;
+        document.getElementById("dateLabel").textContent = t.date;
+        document.getElementById("role").textContent = t.student;
+        document.getElementById("message").textContent = t.loading;
+    }
+
+    async function loadProfile() {
+        updateLanguage();
+
+        const t = translations[currentLanguage] || translations.en;
+
+        try {
+            const { data: sessionData, error: sessionError } =
+                await supabaseClient.auth.getSession();
+
+            if (sessionError) throw sessionError;
+
+            const user = sessionData.session?.user;
+
+            if (!user) {
+                document.getElementById("message").textContent = t.login;
+                return;
+            }
+
+            const { data: profile, error } = await supabaseClient
+                .from("profiles")
+                .select("full_name, role, created_at")
+                .eq("id", user.id)
+                .maybeSingle();
+
+            if (error) throw error;
+
+            if (!profile) {
+                document.getElementById("message").textContent = t.missing;
+                return;
+            }
+
+            const name = profile.full_name || "Student";
+            const email = user.email || "Not available";
+            const role = profile.role || "student";
+
+            document.getElementById("fullName").textContent = name;
+            document.getElementById("nameValue").textContent = name;
+            document.getElementById("emailValue").textContent = email;
+            document.getElementById("roleValue").textContent =
+                role.toUpperCase();
+
+            document.getElementById("avatar").textContent =
+                name.trim().charAt(0).toUpperCase();
+
+            document.getElementById("dateValue").textContent =
+                profile.created_at
+                    ? new Date(profile.created_at).toLocaleDateString()
+                    : "Not available";
+
+            document.getElementById("message").textContent = "";
+
+        } catch (error) {
+            console.error("Profile error:", error);
+            document.getElementById("message").textContent = t.error;
+        }
+    }
+
+    loadProfile();
+</script>
+
+</body>
+</html>
