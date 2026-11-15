@@ -162,8 +162,57 @@
             margin-top: 15px;
         }
 
-        #refreshUploadsBtn {
+        #refreshUploadsBtn,
+        #refreshLessonsBtn {
             margin-bottom: 10px;
+        }
+
+        /* PUBLISHED LESSON CARDS */
+
+        .published-lesson-card {
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 16px;
+            overflow-wrap: anywhere;
+        }
+
+        .published-lesson-card h3 {
+            color: #00d9ff;
+            margin: 0 0 12px;
+        }
+
+        .lesson-details {
+            color: #bbb;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .delete-lesson-btn {
+            background: #dc2626 !important;
+            color: white !important;
+            border: none !important;
+            width: 100%;
+            padding: 12px;
+            border-radius: 7px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .delete-lesson-btn:hover {
+            background: #991b1b !important;
+        }
+
+        .lesson-source {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 5px;
+            background: #173047;
+            color: #00d9ff;
+            font-size: 11px;
+            font-weight: bold;
+            margin-top: 8px;
         }
     </style>
 </head>
@@ -179,6 +228,7 @@
 
     <a href="#dashboard">DASHBOARD</a>
     <a href="#publishLesson">PUBLISH LESSON</a>
+    <a href="#manageLessons">MANAGE LESSONS</a>
     <a href="#uploadFile">UPLOAD PDF</a>
     <a href="#ocrLibrary">DOCUMENT LIBRARY</a>
     <a href="#inviteStudent">INVITE STUDENT</a>
@@ -189,6 +239,8 @@
 
 <main class="admin-container">
 
+    <!-- DASHBOARD -->
+
     <section id="dashboard">
 
         <h2>WELCOME, ADMIN</h2>
@@ -198,6 +250,7 @@
         </p>
 
     </section>
+
 
     <!-- PUBLISH LESSON -->
 
@@ -268,6 +321,34 @@
 
     </section>
 
+
+    <!-- MANAGE PUBLISHED LESSONS -->
+
+    <section class="admin-card" id="manageLessons">
+
+        <h2>MANAGE PUBLISHED LESSONS</h2>
+
+        <p class="section-description">
+            View and manage all published lessons.
+            This includes manually created lessons and OCR lessons.
+            Deleting a lesson removes it from the students' lessons.
+        </p>
+
+        <button type="button" id="refreshLessonsBtn">
+            REFRESH LESSONS
+        </button>
+
+        <div id="publishedLessonsList">
+            <p class="file-info">Loading lessons...</p>
+        </div>
+
+        <p id="lessonsMessage"
+           class="status-message"
+           role="status"></p>
+
+    </section>
+
+
     <!-- PDF / IMAGE UPLOAD -->
 
     <section class="admin-card" id="uploadFile">
@@ -322,6 +403,7 @@
 
     </section>
 
+
     <!-- OCR DOCUMENT LIBRARY -->
 
     <section class="admin-card" id="ocrLibrary">
@@ -346,6 +428,7 @@
            role="status"></p>
 
     </section>
+
 
     <!-- INVITE STUDENT -->
 
@@ -387,6 +470,7 @@
 
 </main>
 
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 
@@ -410,6 +494,12 @@
     const uploadsList = document.getElementById("uploadsList");
     const ocrMessage = document.getElementById("ocrMessage");
 
+    const publishedLessonsList =
+        document.getElementById("publishedLessonsList");
+
+    const lessonsMessage =
+        document.getElementById("lessonsMessage");
+
     const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
     const ALLOWED_TYPES = [
@@ -420,6 +510,7 @@
     ];
 
     let currentAdmin = null;
+    let subjectsMap = {};
 
 
     // CHECK ADMIN
@@ -485,6 +576,8 @@
             return;
         }
 
+        subjectsMap = {};
+
         subjectSelect.innerHTML =
             '<option value="">SELECT SUBJECT</option>';
 
@@ -492,6 +585,8 @@
             '<option value="">SELECT SUBJECT</option>';
 
         data.forEach(function(subject) {
+
+            subjectsMap[subject.id] = subject.name;
 
             const option1 = document.createElement("option");
 
@@ -587,6 +682,8 @@
 
             publishForm.reset();
 
+            await loadPublishedLessons();
+
         } catch (error) {
 
             publishMessage.textContent =
@@ -602,6 +699,233 @@
         }
 
     });
+
+
+    // LOAD ALL PUBLISHED LESSONS
+
+    async function loadPublishedLessons() {
+
+        publishedLessonsList.textContent =
+            "Loading published lessons...";
+
+        lessonsMessage.textContent = "";
+
+        try {
+
+            const { data, error } =
+                await supabaseClient
+                    .from("lessons")
+                    .select(`
+                        id,
+                        subject_id,
+                        category,
+                        title,
+                        published,
+                        published_at,
+                        created_at
+                    `)
+                    .eq("published", true)
+                    .order("created_at", { ascending: false });
+
+            if (error) throw error;
+
+            publishedLessonsList.innerHTML = "";
+
+            if (!data || data.length === 0) {
+
+                publishedLessonsList.textContent =
+                    "No published lessons found.";
+
+                return;
+            }
+
+            data.forEach(function(lesson) {
+
+                const card = document.createElement("div");
+
+                card.className = "published-lesson-card";
+
+                const title = document.createElement("h3");
+
+                title.textContent = lesson.title || "Untitled lesson";
+
+                const details = document.createElement("div");
+
+                details.className = "lesson-details";
+
+                const subjectName =
+                    subjectsMap[lesson.subject_id] || "Unknown subject";
+
+                const subjectLine = document.createElement("div");
+
+                subjectLine.textContent =
+                    "SUBJECT: " + subjectName;
+
+                const categoryLine = document.createElement("div");
+
+                categoryLine.textContent =
+                    "CATEGORY: " + (lesson.category || "General");
+
+                const dateLine = document.createElement("div");
+
+                const lessonDate =
+                    lesson.published_at || lesson.created_at;
+
+                dateLine.textContent =
+                    "PUBLISHED: " +
+                    (lessonDate
+                        ? new Date(lessonDate).toLocaleDateString()
+                        : "Unknown");
+
+                details.append(
+                    subjectLine,
+                    categoryLine,
+                    dateLine
+                );
+
+                const source = document.createElement("span");
+
+                source.className = "lesson-source";
+
+                source.textContent =
+                    lesson.category === "PDF Upload"
+                        ? "OCR / PDF LESSON"
+                        : "PUBLISHED LESSON";
+
+                const deleteButton = document.createElement("button");
+
+                deleteButton.type = "button";
+
+                deleteButton.className = "delete-lesson-btn";
+
+                deleteButton.textContent = "DELETE LESSON";
+
+                deleteButton.dataset.action = "delete-lesson";
+
+                deleteButton.dataset.id = lesson.id;
+
+                card.append(
+                    title,
+                    details,
+                    source,
+                    deleteButton
+                );
+
+                publishedLessonsList.appendChild(card);
+
+            });
+
+        } catch (error) {
+
+            console.error("Load lessons error:", error);
+
+            publishedLessonsList.textContent =
+                "Failed to load lessons: " + error.message;
+
+        }
+
+    }
+
+
+    // DELETE PUBLISHED LESSON
+
+    async function deletePublishedLesson(lessonId, button) {
+
+        if (!currentAdmin) {
+
+            lessonsMessage.textContent =
+                "Admin authentication is required.";
+
+            lessonsMessage.style.color = "#ff7777";
+
+            return;
+        }
+
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this lesson?\n\n" +
+            "It will also disappear from the students' lessons.\n\n" +
+            "This action cannot be undone."
+        );
+
+        if (!confirmed) return;
+
+        button.disabled = true;
+        button.textContent = "DELETING...";
+
+        lessonsMessage.textContent = "";
+
+        try {
+
+            const { data, error } =
+                await supabaseClient
+                    .from("lessons")
+                    .delete()
+                    .eq("id", lessonId)
+                    .eq("published", true)
+                    .select("id");
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+
+                throw new Error(
+                    "Lesson was not deleted. It may already be removed or you may not have permission."
+                );
+
+            }
+
+            lessonsMessage.textContent =
+                "SUCCESS! LESSON DELETED. STUDENTS CAN NO LONGER SEE IT.";
+
+            lessonsMessage.style.color = "#00d9ff";
+
+            await loadPublishedLessons();
+
+        } catch (error) {
+
+            console.error("Delete lesson error:", error);
+
+            lessonsMessage.textContent =
+                error.message || "Failed to delete lesson.";
+
+            lessonsMessage.style.color = "#ff7777";
+
+            button.disabled = false;
+            button.textContent = "DELETE LESSON";
+
+        }
+
+    }
+
+
+    // PUBLISHED LESSON BUTTON ACTIONS
+
+    publishedLessonsList.addEventListener(
+        "click",
+        async function(event) {
+
+            const button =
+                event.target.closest("button[data-action]");
+
+            if (!button) return;
+
+            if (button.dataset.action === "delete-lesson") {
+
+                await deletePublishedLesson(
+                    button.dataset.id,
+                    button
+                );
+
+            }
+
+        }
+    );
+
+
+    // REFRESH PUBLISHED LESSONS
+
+    document.getElementById("refreshLessonsBtn")
+        .addEventListener("click", loadPublishedLessons);
 
 
     // UPLOAD PDF / IMAGE
@@ -910,7 +1234,7 @@
     }
 
 
-    // PROCESS OCR - IMPROVED ERROR DETAILS
+    // PROCESS OCR
 
     async function processDocument(uploadId, button) {
 
@@ -1088,6 +1412,7 @@
             ocrMessage.style.color = "#00d9ff";
 
             await loadUploads();
+            await loadPublishedLessons();
 
         } catch (error) {
 
@@ -1224,6 +1549,8 @@
 
         await loadUploads();
 
+        await loadPublishedLessons();
+
     }
 
     startAdminDashboard();
@@ -1231,4 +1558,4 @@
 </script>
 
 </body>
-    </html>
+</html>
